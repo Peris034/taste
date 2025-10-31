@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Classic Gadget - MyStore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '3381248502034833');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=3381248502034833&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
+
+    <!-- 
+      ==================================================================
+      STEP 2: DATALAYER (index.html)
+      ==================================================================
+    -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'page_view',
+            'page_type': 'Product Detail Page',
+            'product_name': 'The Classic Gadget',
+            'product_price': 99.99,
+            'currency': 'USD'
+        });
+    </script>
+
+    <!-- 
+      ==================================================================
+      STEP 1: GTM SCRIPT (HEAD)
+      (Your GTM ID is already here)
+      ==================================================================
+    -->
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TTMTP9T2');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body class="bg-gray-100">
+    <!-- 
+      ==================================================================
+      STEP 1: GTM SCRIPT (BODY)
+      ==================================================================
+    -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Section 1: Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
+
+            <!-- Menu Links -->
+            <div class="flex items-center space-x-6">
+                <!-- 
+                  ==================================================================
+                  MODIFICATION 1: Added "About Us" link to new page
+                  ==================================================================
+                -->
+                <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
+                    About Us
+                </a>
+                <button id="loginBtn"
+                    class="bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section 2: Main Product Area -->
+    <div class="container mx-auto max-w-4xl mt-12 mb-12 px-4">
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden md:flex">
+            <!-- Product Image -->
+            <div class="md:w-1/2">
+                <img src="https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget"
+                    class="w-full h-auto object-cover">
+            </div>
+
+            <!-- Product Details & Actions -->
+            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                <h1 class="text-3xl font-bold text-gray-900">The Classic Gadget</h1>
+                <p class="text-gray-600 mt-4">
+                    Experience the future of audio with this sleek, powerful, and easy-to-use gadget. Perfect for music,
+                    calls, and everything in between.
+                </p>
+                <span class="text-4xl font-bold text-blue-600 my-6 block">$99.99</span>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-1 gap-4">
+                    <button id="addToCartBtn"
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
+                        Add to Cart
+                    </button>
+                    <button id="purchaseBtn"
+                        class="w-full bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 text-lg">
+                        Buy Now
+                    </button>
+                </div>
+                <div class="mt-6 pt-6 border-t border-gray-200 flex space-x-4">
+                    <button id="demoBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
+                        Request Demo
+                    </button>
+                    <button id="shareBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: "YOU MAY ALSO LIKE" -->
+    <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">You May Also Like</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Product 1 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800">The Gadget Pro</h3>
+                    <p class="text-2xl font-bold text-blue-600 mt-2">$149.99</p>
+                    <button
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 2 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800">The Gadget Mini</h3>
+                    <p class="text-2xl font-bold text-blue-600 mt-2">$49.99</p>
+                    <button
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            <!-- Product 3 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus"
+                    class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800">The Gadget Plus</h3>
+                    <p class="text-2xl font-bold text-blue-600 mt-2">$199.99</p>
+                    <button
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: "WHY CHOOSE US" -->
+    <div class="bg-white py-24">
+        <div class="container mx-auto max-w-4xl px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Experience the MyStore Difference</h2>
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                We aren't just another gadget store. We are curators of technology that enhances your life. From our
+                seamless checkout process to our world-class customer support, every detail is designed with you in
+                mind.
+            </p>
+            <a href="#"
+                class="bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition duration-300">
+                Learn Our Story
+            </a>
+        </div>
+    </div>
+
+    <!-- Section 5: Footer -->
+    <footer class="text-center p-12 text-gray-500 text-sm">
+        © 2025 MyStore. All rights reserved.
+    </footer>
+
+    <!-- 
+      ==================================================================
+      STEP 4: ALL DATALAYER EVENT LISTENERS
+      ==================================================================
+    -->
+    <script>
+        // --- Define our main product's data once, so we can reuse it ---
+        const mainProductData = {
+            item_name: 'The Classic Gadget',
+            item_id: 'GADGET-001',
+            price: 99.99,
+            currency: 'USD'
+        };
+
+        // --- CUSTOM EVENT 1: login ---
+        const loginButton = document.getElementById('loginBtn');
+        loginButton.addEventListener('click', function () {
+            console.log('Login button was clicked! Pushing to dataLayer...');
+            window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+            alert('DataLayer Event: login');
+        });
+
+        // --- STANDARD EVENT 1: add_to_cart ---
+        const addToCartButton = document.getElementById('addToCartBtn');
+        addToCartButton.addEventListener('click', function () {
+            console.log('Add to Cart clicked! Pushing to dataLayer...');
+            window.dataLayer.push({
+                'event': 'add_to_cart',
+                'ecommerce': {
+                    'currency': 'USD',
+                    'value': mainProductData.price,
+                    'items': [mainProductData]
+                }
+            });
+            alert('DataLayer Event: add_to_cart');
+        });
+
+        // --- STANDARD EVENT 2: begin_checkout ---
+        const purchaseButton = document.getElementById('purchaseBtn');
+        purchaseButton.addEventListener('click', function () {
+            console.log('Buy Now clicked! Pushing begin_checkout to dataLayer...');
+            window.dataLayer.push({
+                'event': 'begin_checkout',
+                'ecommerce': {
+                    'currency': 'USD',
+                    'value': mainProductData.price,
+                    'items': [mainProductData]
+                }
+            });
+
+            /* ==================================================================
+              MODIFICATION 2: Redirect to the confirmation page
+              This simulates a successful purchase.
+              ==================================================================
+            */
+            console.log('Redirecting to confirmation page...');
+            window.location.href = 'confirmation.html';
+        });
+
+        // --- STANDARD EVENT 3: generate_lead ---
+        const demoButton = document.getElementById('demoBtn');
+        demoButton.addEventListener('click', function () {
+            console.log('Request Demo clicked! Pushing generate_lead to dataLayer...');
+            window.dataLayer.push({ 'event': 'generate_lead', 'lead_type': 'Product Demo' });
+            alert('DataLayer Event: generate_lead');
+        });
+
+        // --- CUSTOM EVENT 2: share ---
+        const shareButton = document.getElementById('shareBtn');
+        shareButton.addEventListener('click', function () {
+            console.log('Share clicked! Pushing share to dataLayer...');
+            window.dataLayer.push({
+                'event': 'share',
+                'share_method': 'Link',
+                'share_product': mainProductData.item_name
+            });
+            alert('DataLayer Event: share');
+        });
+    </script>
+</body>
+
+</html>

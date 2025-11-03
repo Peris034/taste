@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Classic Gadget - MyStore</title>
-    <!-- All <head> code (GTM, DataLayer, etc.) is identical and correct -->
+    <!-- All head scripts (Tailwind, Fonts, GTM, DataLayer) are here -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-    <!-- Twitter base code, Snap, Meta, DataLayer, and GTM scripts are all here -->
-    
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+
     <!-- Twitter conversion tracking base code -->
     <script>
         !function (e, t, n, s, u, a) {
@@ -28,12 +22,9 @@
         twq('config', 'qpv9g');
     </script>
     <!-- End Twitter conversion tracking base code -->
-
     <!-- Twitter conversion tracking event code -->
     <script type="text/javascript">
-        // Insert Twitter Event ID
-        twq('event', 'tw-qpv9g-qpv9h', {
-        });
+        twq('event', 'tw-qpv9g-qpv9h', {});
     </script>
     <!-- End Twitter conversion tracking event code -->
 
@@ -44,9 +35,7 @@
             a.queue = []; var s = 'script'; r = t.createElement(s); r.async = !0;
             r.src = n; var u = t.getElementsByTagName(s)[0];
             u.parentNode.insertBefore(r, u);
-        })(window, document,
-            'https://sc-static.net/scevent.min.js');
-
+        })(window, document, 'https://sc-static.net/scevent.min.js');
         snaptr('init', '5566d525-91b5-4dbc-9e85-2de9d5969475', {});
         snaptr('track', 'PAGE_VIEW');
     </script>
@@ -72,17 +61,43 @@
             src="https://www.facebook.com/tr?id=3381248502034833&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
+    <!-- 
+      ==================================================================
+      STEP 2: DATALAYER (index.html)
+      ==================================================================
+    -->
     <script>
         window.dataLayer = window.dataLayer || [];
+        // We capture the product details here for the "view_item" event
+        const viewedProduct = {
+            item_name: 'The Classic Gadget',
+            item_id: 'GADGET-001',
+            price: 99.99,
+            currency: 'USD'
+        };
+
+        // Event 1: The PageView
         window.dataLayer.push({
             'event': 'page_view',
             'page_type': 'Product Detail Page',
-            'product_name': 'The Classic Gadget',
-            'product_price': 99.99,
-            'currency': 'USD'
+        });
+
+        // Event 2: The STANDARD 'view_item' event (replaces our old 'page_view' data)
+        window.dataLayer.push({
+            'event': 'view_item',
+            'ecommerce': {
+                'currency': 'USD',
+                'value': viewedProduct.price,
+                'items': [viewedProduct]
+            }
         });
     </script>
 
+    <!-- 
+      ==================================================================
+      STEP 1: GTM SCRIPT (HEAD)
+      ==================================================================
+    -->
     <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -96,18 +111,27 @@
 </head>
 
 <body class="bg-gray-100">
-    <!-- GTM Noscript is correct -->
+    <!-- GTM Noscript -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- Nav Bar is correct -->
+    <!-- Section 1: Navigation Bar -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
             <div class="flex items-center space-x-6">
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
                     About Us
+                </a>
+                <!-- 
+                  ==================================================================
+                  MODIFICATION 1: Added a link to our new cart.html page
+                  The <span id="cartCount"> will be updated by our script.
+                  ==================================================================
+                -->
+                <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
+                    Cart (<span id="cartCount">0</span>)
                 </a>
                 <button id="loginBtn"
                     class="bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
@@ -117,15 +141,16 @@
         </div>
     </nav>
 
-    <!-- Main Product Area is correct -->
+    <!-- Section 2: Main Product Area -->
     <div class="container mx-auto max-w-4xl mt-12 mb-12 px-4">
         <div class="bg-white shadow-xl rounded-lg overflow-hidden md:flex">
-            <!-- ... (image div) ... -->
+            <!-- Product Image -->
             <div class="md:w-1/2">
                 <img src="https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget"
                     class="w-full h-auto object-cover">
             </div>
-            <!-- ... (details div) ... -->
+            
+            <!-- Product Details & Actions -->
             <div class="md:w-1/2 p-8 flex flex-col justify-center">
                 <h1 class="text-3xl font-bold text-gray-900">The Classic Gadget</h1>
                 <p class="text-gray-600 mt-4">
@@ -134,15 +159,18 @@
                 </p>
                 <span class="text-4xl font-bold text-blue-600 my-6 block">$99.99</span>
                 
+                <!-- Action Buttons -->
                 <div class="grid grid-cols-1 gap-4">
                     <button id="addToCartBtn"
                         class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
                         Add to Cart
                     </button>
-                    <button id="purchaseBtn"
-                        class="w-full bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 text-lg">
-                        Buy Now
-                    </button>
+                    <!-- 
+                      ==================================================================
+                      MODIFICATION 2: Removed the "Buy Now" button.
+                      This forces the user through the proper cart funnel.
+                      ==================================================================
+                    -->
                 </div>
                 <div class="mt-6 pt-6 border-t border-gray-200 flex space-x-4">
                     <button id="demoBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
@@ -156,7 +184,7 @@
         </div>
     </div>
 
-    <!-- "YOU MAY ALSO LIKE" Section -->
+    <!-- Section 3: "YOU MAY ALSO LIKE" (Corrected) -->
     <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
         <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">You May Also Like</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -166,18 +194,9 @@
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Pro</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$149.99</p>
-                    <!-- 
-                      ==================================================================
-                      CORRECTION 1.A: Added "secondaryAddToCartBtn" class for tracking
-                      and data attributes to store product info.
-                      ==================================================================
-                    -->
                     <button 
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Pro"
-                        data-id="GADGET-PRO"
-                        data-price="149.99"
-                    >
+                        data-name="The Gadget Pro" data-id="GADGET-PRO" data-price="149.99">
                         Add to Cart
                     </button>
                 </div>
@@ -188,13 +207,9 @@
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Mini</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$49.99</p>
-                    <!-- CORRECTION 1.B: Added class and data attributes -->
                     <button 
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Mini"
-                        data-id="GADGET-MINI"
-                        data-price="49.99"
-                    >
+                        data-name="The Gadget Mini" data-id="GADGET-MINI" data-price="49.99">
                         Add to Cart
                     </button>
                 </div>
@@ -205,13 +220,9 @@
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Plus</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$199.99</p>
-                    <!-- CORRECTION 1.C: Added class and data attributes -->
                     <button 
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Plus"
-                        data-id="GADGET-PLUS"
-                        data-price="199.99"
-                    >
+                        data-name="The Gadget Plus" data-id="GADGET-PLUS" data-price="199.99">
                         Add to Cart
                     </button>
                 </div>
@@ -219,18 +230,15 @@
         </div>
     </div>
 
-    <!-- "WHY CHOOSE US" Section -->
+    <!-- Section 4: "WHY CHOOSE US" (Corrected) -->
     <div class="bg-white py-24">
         <div class="container mx-auto max-w-4xl px-4 text-center">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">Experience the MyStore Difference</h2>
             <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                We aren't just another gadget store. We are curators of technology that enhances your life. From our seamless checkout process to our world-class customer support, every detail is designed with you in mind.
+                We aren't just another gadget store. We are curators of technology that enhances your life. From our
+                seamless checkout process to our world-class customer support, every detail is designed with you in
+                mind.
             </p>
-            <!-- 
-              ==================================================================
-              CORRECTION 2: Fixed the broken footer link
-              ==================================================================
-            -->
             <a href="about.html"
                 class="bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition duration-300">
                 Learn Our Story
@@ -238,120 +246,127 @@
         </div>
     </div>
 
-    <!-- Footer is correct -->
+    <!-- Section 5: Footer -->
     <footer class="text-center p-12 text-gray-500 text-sm">
         © 2025 MyStore. All rights reserved.
     </footer>
 
     <!-- 
       ==================================================================
-      STEP 4: ALL DATALAYER EVENT LISTENERS (CORRECTED)
+      MODIFICATION 3: ALL JAVASCRIPT LISTENERS (HEAVILY MODIFIED)
       ==================================================================
     -->
     <script>
-        // --- Define our main product's data once, so we can reuse it ---
-        const mainProductData = {
-            item_name: 'The Classic Gadget',
-            item_id: 'GADGET-001',
-            price: 99.99,
-            currency: 'USD'
-        };
+        /* * =============================================
+         * CART HELPER FUNCTIONS (using localStorage)
+         * =============================================
+         */
+        
+        // Function to get the cart from localStorage
+        function getCart() {
+            const cart = localStorage.getItem('myStoreCart');
+            return cart ? JSON.parse(cart) : [];
+        }
 
-        // --- CUSTOM EVENT 1: login ---
-        const loginButton = document.getElementById('loginBtn');
-        loginButton.addEventListener('click', function () {
-            console.log('Login button was clicked! Pushing to dataLayer...');
-            window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            alert('DataLayer Event: login');
-        });
+        // Function to save the cart to localStorage
+        function saveCart(cart) {
+            localStorage.setItem('myStoreCart', JSON.stringify(cart));
+            updateCartCount();
+        }
 
-        // --- STANDARD EVENT 1: add_to_cart (Main Button) ---
-        const addToCartButton = document.getElementById('addToCartBtn');
-        addToCartButton.addEventListener('click', function () {
-            console.log('Add to Cart clicked! Pushing to dataLayer...');
+        // Function to update the cart count in the nav bar
+        function updateCartCount() {
+            const cart = getCart();
+            const countElement = document.getElementById('cartCount');
+            if (countElement) {
+                countElement.textContent = cart.length;
+            }
+        }
+
+        // Function to add an item to the cart
+        function addItemToCart(productData) {
+            const cart = getCart();
+            cart.push(productData);
+            saveCart(cart);
+            
+            // Push the event to the dataLayer
+            console.log('add_to_cart event pushed to dataLayer:', productData);
             window.dataLayer.push({
                 'event': 'add_to_cart',
                 'ecommerce': {
                     'currency': 'USD',
-                    'value': mainProductData.price,
-                    'items': [mainProductData] 
+                    'value': productData.price,
+                    'items': [productData]
                 }
             });
-            alert('DataLayer Event: add_to_cart (Main)');
-        });
+            alert(productData.item_name + ' added to cart!');
+        }
 
-        // --- STANDARD EVENT 2: begin_checkout ---
-        const purchaseButton = document.getElementById('purchaseBtn');
-        purchaseButton.addEventListener('click', function () {
-            console.log('Buy Now clicked! Pushing begin_checkout to dataLayer...');
-            window.dataLayer.push({
-                'event': 'begin_checkout',
-                'ecommerce': {
-                    'currency': 'USD',
-                    'value': mainProductData.price,
-                    'items': [mainProductData]
-                }
+        /* * =============================================
+         * EVENT LISTENERS
+         * =============================================
+         */
+
+        // --- CUSTOM EVENT 1: login ---
+        const loginButton = document.getElementById('loginBtn');
+        if (loginButton) {
+            loginButton.addEventListener('click', function () {
+                console.log('Login button was clicked! Pushing to dataLayer...');
+                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+                alert('DataLayer Event: login');
             });
-            
-            console.log('Redirecting to confirmation page...');
-            window.location.href = 'confirmation.html';
-        });
+        }
+
+        // --- STANDARD EVENT 1: add_to_cart (Main Button) ---
+        const addToCartButton = document.getElementById('addToCartBtn');
+        if (addToCartButton) {
+            addToCartButton.addEventListener('click', function () {
+                // 'viewedProduct' is defined in the <head> script
+                addItemToCart(viewedProduct);
+            });
+        }
 
         // --- STANDARD EVENT 3: generate_lead ---
         const demoButton = document.getElementById('demoBtn');
-        demoButton.addEventListener('click', function () {
-            console.log('Request Demo clicked! Pushing generate_lead to dataLayer...');
-            window.dataLayer.push({ 'event': 'generate_lead', 'lead_type': 'Product Demo' });
-            alert('DataLayer Event: generate_lead');
-        });
+        if (demoButton) {
+            demoButton.addEventListener('click', function () {
+                console.log('Request Demo clicked! Pushing generate_lead to dataLayer...');
+                window.dataLayer.push({ 'event': 'generate_lead', 'lead_type': 'Product Demo' });
+                alert('DataLayer Event: generate_lead');
+            });
+        }
 
         // --- CUSTOM EVENT 2: share ---
         const shareButton = document.getElementById('shareBtn');
-        shareButton.addEventListener('click', function () {
-            console.log('Share clicked! Pushing share to dataLayer...');
-            window.dataLayer.push({
-                'event': 'share',
-                'share_method': 'Link',
-                'share_product': mainProductData.item_name
+        if (shareButton) {
+            shareButton.addEventListener('click', function () {
+                console.log('Share clicked! Pushing share to dataLayer...');
+                window.dataLayer.push({
+                    'event': 'share',
+                    'share_method': 'Link',
+                    'share_product': viewedProduct.item_name
+                });
+                alert('DataLayer Event: share');
             });
-            alert('DataLayer Event: share');
-        });
+        }
 
-        /* ==================================================================
-          CORRECTION 1.D: Added new listeners for the "You May Also Like" buttons
-          This fixes the "Not Implemented" audit error.
-          ==================================================================
-        */
-        // 1. Find ALL the secondary buttons
+        // --- Add to Cart (Secondary Buttons) ---
         const secondaryButtons = document.querySelectorAll('.secondaryAddToCartBtn');
-        
-        // 2. Loop through each button and add a listener
         secondaryButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // 3. Get the product data from the data- attributes we added
-                const productName = button.getAttribute('data-name');
-                const productId = button.getAttribute('data-id');
-                const productPrice = parseFloat(button.getAttribute('data-price'));
-
                 const productData = {
-                    item_name: productName,
-                    item_id: productId,
-                    price: productPrice,
+                    item_name: button.getAttribute('data-name'),
+                    item_id: button.getAttribute('data-id'),
+                    price: parseFloat(button.getAttribute('data-price')),
                     currency: 'USD'
                 };
-
-                console.log('Secondary Add to Cart clicked! Pushing to dataLayer...');
-                window.dataLayer.push({
-                    'event': 'add_to_cart', // We use the *same* event name
-                    'ecommerce': {
-                        'currency': 'USD',
-                        'value': productData.price,
-                        'items': [productData]
-                    }
-                });
-                alert('DataLayer Event: add_to_cart (' + productName + ')');
+                addItemToCart(productData);
             });
         });
+
+        // --- Run on page load ---
+        updateCartCount();
+
     </script>
 </body>
 </html>

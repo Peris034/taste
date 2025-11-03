@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - MyStore</title>
+    <!-- All head scripts are here, identical to other pages -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+
+    <!-- 
+      ==================================================================
+      DATALAYER (cart.html)
+      We will push the 'view_cart' event in the body script
+      after we've loaded the cart items.
+      ==================================================================
+    -->
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'page_view',
+            'page_type': 'Cart'
+        });
+    </script>
+
+    <!-- GTM SCRIPT (HEAD) -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https.www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TTMTP9T2');</script>
+    <!-- End Google Tag Manager -->
+</head>
+
+<body class="bg-gray-100">
+    <!-- GTM SCRIPT (BODY) -->
+    <noscript><iframe src="https.www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Section 1: Navigation Bar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
+            <div class="flex items-center space-x-6">
+                <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
+                    About Us
+                </a>
+                <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
+                    Cart (<span id="cartCount">0</span>)
+                </a>
+                <button id="loginBtn"
+                    class="bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section 2: Main Cart Content -->
+    <div class="container mx-auto max-w-4xl mt-12 mb-24 px-4">
+        <div class="bg-white shadow-xl rounded-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Your Shopping Cart</h1>
+            
+            <!-- This div will be populated by our script -->
+            <div id="cartItemsContainer" class="divide-y divide-gray-200">
+                <!-- Cart items will be injected here -->
+                <!-- Example:
+                <div class="flex justify-between items-center py-4">
+                    <span class="font-semibold text-gray-800">The Classic Gadget</span>
+                    <span class="font-semibold text-gray-800">$99.99</span>
+                </div>
+                -->
+            </div>
+
+            <!-- Cart Total and Checkout Button -->
+            <div class="mt-8 pt-8 border-t-2 border-gray-300 flex justify-between items-center">
+                <span class="text-2xl font-bold text-gray-900">Total: <span id="cartTotal">$0.00</span></span>
+                <button id="checkoutBtn" class="w-1/2 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 text-lg">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Footer -->
+    <footer class="text-center p-12 text-gray-500 text-sm">
+        © 2025 MyStore. All rights reserved.
+    </footer>
+
+    <!-- 
+      ==================================================================
+      EVENT LISTENERS (cart.html)
+      This is the most important script. It reads localStorage,
+      builds the page, and fires our 'view_cart' and 'begin_checkout' events.
+      ==================================================================
+    -->
+    <script>
+        /* * =============================================
+         * CART HELPER FUNCTIONS (identical to index.html)
+         * =============================================
+         */
+        function getCart() {
+            const cart = localStorage.getItem('myStoreCart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const countElement = document.getElementById('cartCount');
+            if (countElement) {
+                countElement.textContent = cart.length;
+            }
+        }
+
+        /* * =============================================
+         * PAGE-SPECIFIC SCRIPT
+         * =============================================
+         */
+
+        // --- 1. Function to Display Cart Items ---
+        function displayCart() {
+            const cart = getCart();
+            const container = document.getElementById('cartItemsContainer');
+            const totalElement = document.getElementById('cartTotal');
+            const checkoutButton = document.getElementById('checkoutBtn');
+            
+            let cartTotal = 0;
+            let cartItems = []; // For the dataLayer
+
+            container.innerHTML = ''; // Clear old content
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Your cart is empty.</p>';
+                checkoutButton.disabled = true;
+                checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                cart.forEach(item => {
+                    // Create HTML for the cart item
+                    const itemHtml = `
+                        <div class="flex justify-between items-center py-4">
+                            <span class="font-semibold text-gray-800">${item.item_name}</span>
+                            <span class="font-semibold text-gray-800">$${item.price.toFixed(2)}</span>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                    
+                    // Add to our total and dataLayer item list
+                    cartTotal += item.price;
+                    cartItems.push(item);
+                });
+                
+                totalElement.textContent = `$${cartTotal.toFixed(2)}`;
+                checkoutButton.disabled = false;
+                checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                
+                // --- FIRE STANDARD EVENT: 'view_cart' ---
+                console.log('Page loaded, firing view_cart event...');
+                window.dataLayer.push({
+                    'event': 'view_cart',
+                    'ecommerce': {
+                        'currency': 'USD',
+                        'value': cartTotal,
+                        'items': cartItems
+                    }
+                });
+            }
+        }
+
+        // --- 2. Add Listener for Checkout Button (STANDARD EVENT: 'begin_checkout') ---
+        const checkoutButton = document.getElementById('checkoutBtn');
+        checkoutButton.addEventListener('click', function() {
+            console.log('Checkout button clicked! Firing begin_checkout event...');
+            
+            const cart = getCart();
+            let cartTotal = 0;
+            cart.forEach(item => cartTotal += item.price);
+
+            window.dataLayer.push({
+                'event': 'begin_checkout',
+                'ecommerce': {
+                    'currency': 'USD',
+                    'value': cartTotal,
+                    'items': cart
+                }
+            });
+
+            // Redirect to the final confirmation page
+            window.location.href = 'confirmation.html';
+        });
+
+        // --- 3. Add Listener for Nav Bar Login Button ---
+        const loginButton = document.getElementById('loginBtn');
+        if (loginButton) {
+            loginButton.addEventListener('click', function () {
+                console.log('Login button was clicked! Pushing to dataLayer...');
+                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+                alert('DataLayer Event: login');
+            });
+        }
+
+        // --- 4. Run on page load ---
+        updateCartCount();
+        displayCart();
+    </script>
+</body>
+</html>

@@ -4,12 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart - MyStore</title>
-    <!-- All head scripts are here, identical to other pages -->
+    <!-- All head scripts (Tailwind, Fonts) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
+
+    <!-- 
+      ==================================================================
+      HARD-CODED PIXELS (from about.html)
+      Base pixels are on EVERY page.
+      ==================================================================
+    -->
+    <!-- Twitter conversion tracking base code -->
+    <script>
+        !function (e, t, n, s, u, a) {
+            e.twq || (s = e.twq = function () {
+                s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
+            }, s.version = '1.1', s.queue = [], u = t.createElement(n), u.async = !0, u.src = 'https://static.ads-twitter.com/uwt.js',
+                a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
+        }(window, document, 'script');
+        twq('config', 'qpv9g');
+    </script>
+    <!-- End Twitter conversion tracking base code -->
+    <!-- Snap Pixel Code -->
+    <script type='text/javascript'>
+        (function (e, t, n) {
+            if (e.snaptr) return; var a = e.snaptr = function () { a.handleRequest ? a.handleRequest.apply(a, arguments) : a.queue.push(arguments) };
+            a.queue = []; var s = 'script'; r = t.createElement(s); r.async = !0;
+            r.src = n; var u = t.getElementsByTagName(s)[0];
+            u.parentNode.insertBefore(r, u);
+        })(window, document,
+            'https://sc-static.net/scevent.min.js');
+        snaptr('init', '5566d525-91b5-4dbc-9e85-2de9d5969475', {});
+        snaptr('track', 'PAGE_VIEW');
+    </script>
+    <!-- End Snap Pixel Code -->
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '3381248502034833');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=3381248502034833&ev=PageView&noscript=1" /></noscript>
+    <!-- End Meta Pixel Code -->
 
     <!-- 
       ==================================================================
@@ -26,25 +76,37 @@
         });
     </script>
 
-    <!-- GTM SCRIPT (HEAD) -->
+    <!-- 
+      ==================================================================
+      GTM SCRIPT (HEAD)
+      Must be on EVERY page. (Your GTM ID is here)
+      ==================================================================
+    -->
+    <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
                 'gtm.start':
                     new Date().getTime(), event: 'gtm.js'
             }); var f = d.getElementsByTagName(s)[0],
                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https.www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-TTMTP9T2');</script>
     <!-- End Google Tag Manager -->
 </head>
 
 <body class="bg-gray-100">
-    <!-- GTM SCRIPT (BODY) -->
-    <noscript><iframe src="https.www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
+    <!-- 
+      ==================================================================
+      GTM SCRIPT (BODY)
+      Must be on EVERY page.
+      ==================================================================
+    -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- Section 1: Navigation Bar -->
+    <!-- Section 1: Navigation Bar (Consistent with other pages) -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
@@ -70,13 +132,8 @@
             
             <!-- This div will be populated by our script -->
             <div id="cartItemsContainer" class="divide-y divide-gray-200">
-                <!-- Cart items will be injected here -->
-                <!-- Example:
-                <div class="flex justify-between items-center py-4">
-                    <span class="font-semibold text-gray-800">The Classic Gadget</span>
-                    <span class="font-semibold text-gray-800">$99.99</span>
-                </div>
-                -->
+                <!-- Cart items will be injected here by script -->
+                <!-- e.g., <p>Your cart is empty.</p> -->
             </div>
 
             <!-- Cart Total and Checkout Button -->
@@ -97,13 +154,13 @@
     <!-- 
       ==================================================================
       EVENT LISTENERS (cart.html)
-      This is the most important script. It reads localStorage,
-      builds the page, and fires our 'view_cart' and 'begin_checkout' events.
+      This script reads localStorage, builds the page,
+      and fires 'view_cart' and 'begin_checkout' events.
       ==================================================================
     -->
     <script>
         /* * =============================================
-         * CART HELPER FUNCTIONS (identical to index.html)
+         * CART HELPER FUNCTIONS
          * =============================================
          */
         function getCart() {
@@ -132,7 +189,7 @@
             const checkoutButton = document.getElementById('checkoutBtn');
             
             let cartTotal = 0;
-            let cartItems = []; // For the dataLayer
+            let cartItemsForDataLayer = []; // For the dataLayer
 
             container.innerHTML = ''; // Clear old content
 
@@ -144,7 +201,7 @@
                 cart.forEach(item => {
                     // Create HTML for the cart item
                     const itemHtml = `
-                        <div class="flex justify-between items-center py-4">
+                        <div classViews="flex justify-between items-center py-4">
                             <span class="font-semibold text-gray-800">${item.item_name}</span>
                             <span class="font-semibold text-gray-800">$${item.price.toFixed(2)}</span>
                         </div>
@@ -153,7 +210,13 @@
                     
                     // Add to our total and dataLayer item list
                     cartTotal += item.price;
-                    cartItems.push(item);
+                    // Format for ecommerce events
+                    cartItemsForDataLayer.push({
+                        item_id: item.item_id,
+                        item_name: item.item_name,
+                        price: item.price,
+                        quantity: 1 // Our simple cart only supports 1
+                    });
                 });
                 
                 totalElement.textContent = `$${cartTotal.toFixed(2)}`;
@@ -167,7 +230,7 @@
                     'ecommerce': {
                         'currency': 'USD',
                         'value': cartTotal,
-                        'items': cartItems
+                        'items': cartItemsForDataLayer
                     }
                 });
             }
@@ -180,14 +243,24 @@
             
             const cart = getCart();
             let cartTotal = 0;
-            cart.forEach(item => cartTotal += item.price);
+            let itemsForDataLayer = [];
+            cart.forEach(item => {
+                cartTotal += item.price;
+                itemsForDataLayer.push({
+                    item_id: item.item_id,
+                    item_name: item.item_name,
+                    price: item.price,
+                    quantity: 1
+                });
+            });
 
+            // Fire the event *before* redirecting
             window.dataLayer.push({
                 'event': 'begin_checkout',
                 'ecommerce': {
                     'currency': 'USD',
                     'value': cartTotal,
-                    'items': cart
+                    'items': itemsForDataLayer
                 }
             });
 
@@ -206,8 +279,9 @@
         }
 
         // --- 4. Run on page load ---
-        updateCartCount();
-        displayCart();
+        updateCartCount(); // Update nav bar count
+        displayCart(); // Build the page and fire 'view_cart'
     </script>
 </body>
 </html>
+

@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Classic Gadget - MyStore</title>
-    <!-- All head scripts (Tailwind, Fonts, GTM, DataLayer) are here -->
+    <!-- All head scripts (Tailwind, Fonts) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
 
+    <!-- Hard-coded pixels (as requested in original prompt) -->
     <!-- Twitter conversion tracking base code -->
     <script>
         !function (e, t, n, s, u, a) {
@@ -27,7 +28,6 @@
         twq('event', 'tw-qpv9g-qpv9h', {});
     </script>
     <!-- End Twitter conversion tracking event code -->
-
     <!-- Snap Pixel Code -->
     <script type='text/javascript'>
         (function (e, t, n) {
@@ -35,12 +35,12 @@
             a.queue = []; var s = 'script'; r = t.createElement(s); r.async = !0;
             r.src = n; var u = t.getElementsByTagName(s)[0];
             u.parentNode.insertBefore(r, u);
-        })(window, document, 'https://sc-static.net/scevent.min.js');
+        })(window, document,
+            'https://sc-static.net/scevent.min.js');
         snaptr('init', '5566d525-91b5-4dbc-9e85-2de9d5969475', {});
         snaptr('track', 'PAGE_VIEW');
     </script>
     <!-- End Snap Pixel Code -->
-
     <!-- Meta Pixel Code -->
     <script>
         !function (f, b, e, v, n, t, s) {
@@ -63,7 +63,8 @@
 
     <!-- 
       ==================================================================
-      STEP 2: DATALAYER (index.html)
+      DATALAYER (index.html)
+      We now push 'view_item' which is the standard event for a product page.
       ==================================================================
     -->
     <script>
@@ -82,7 +83,7 @@
             'page_type': 'Product Detail Page',
         });
 
-        // Event 2: The STANDARD 'view_item' event (replaces our old 'page_view' data)
+        // Event 2: The STANDARD 'view_item' event
         window.dataLayer.push({
             'event': 'view_item',
             'ecommerce': {
@@ -93,12 +94,7 @@
         });
     </script>
 
-    <!-- 
-      ==================================================================
-      STEP 1: GTM SCRIPT (HEAD)
-      ==================================================================
-    -->
-    <!-- Google Tag Manager -->
+    <!-- GTM SCRIPT (HEAD) -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
                 'gtm.start':
@@ -124,12 +120,7 @@
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
                     About Us
                 </a>
-                <!-- 
-                  ==================================================================
-                  MODIFICATION 1: Added a link to our new cart.html page
-                  The <span id="cartCount"> will be updated by our script.
-                  ==================================================================
-                -->
+                <!-- Link to the new cart.html page -->
                 <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
                     Cart (<span id="cartCount">0</span>)
                 </a>
@@ -165,12 +156,7 @@
                         class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
                         Add to Cart
                     </button>
-                    <!-- 
-                      ==================================================================
-                      MODIFICATION 2: Removed the "Buy Now" button.
-                      This forces the user through the proper cart funnel.
-                      ==================================================================
-                    -->
+                    <!-- "Buy Now" button removed to force cart flow -->
                 </div>
                 <div class="mt-6 pt-6 border-t border-gray-200 flex space-x-4">
                     <button id="demoBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
@@ -184,7 +170,7 @@
         </div>
     </div>
 
-    <!-- Section 3: "YOU MAY ALSO LIKE" (Corrected) -->
+    <!-- Section 3: "YOU MAY ALSO LIKE" -->
     <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
         <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">You May Also Like</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -230,7 +216,7 @@
         </div>
     </div>
 
-    <!-- Section 4: "WHY CHOOSE US" (Corrected) -->
+    <!-- Section 4: "WHY CHOOSE US" -->
     <div class="bg-white py-24">
         <div class="container mx-auto max-w-4xl px-4 text-center">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">Experience the MyStore Difference</h2>
@@ -253,7 +239,7 @@
 
     <!-- 
       ==================================================================
-      MODIFICATION 3: ALL JAVASCRIPT LISTENERS (HEAVILY MODIFIED)
+      ALL JAVASCRIPT LISTENERS (HEAVILY MODIFIED for localStorage)
       ==================================================================
     -->
     <script>
@@ -286,20 +272,26 @@
         // Function to add an item to the cart
         function addItemToCart(productData) {
             const cart = getCart();
-            cart.push(productData);
-            saveCart(cart);
+            const existingItem = cart.find(item => item.item_id === productData.item_id);
             
-            // Push the event to the dataLayer
-            console.log('add_to_cart event pushed to dataLayer:', productData);
-            window.dataLayer.push({
-                'event': 'add_to_cart',
-                'ecommerce': {
-                    'currency': 'USD',
-                    'value': productData.price,
-                    'items': [productData]
-                }
-            });
-            alert(productData.item_name + ' added to cart!');
+            if (existingItem) {
+                alert(productData.item_name + ' is already in your cart!');
+            } else {
+                cart.push(productData);
+                saveCart(cart);
+                
+                // Push the event to the dataLayer
+                console.log('add_to_cart event pushed to dataLayer:', productData);
+                window.dataLayer.push({
+                    'event': 'add_to_cart',
+                    'ecommerce': {
+                        'currency': 'USD',
+                        'value': productData.price,
+                        'items': [productData]
+                    }
+                });
+                alert(productData.item_name + ' added to cart!');
+            }
         }
 
         /* * =============================================
@@ -322,7 +314,13 @@
         if (addToCartButton) {
             addToCartButton.addEventListener('click', function () {
                 // 'viewedProduct' is defined in the <head> script
-                addItemToCart(viewedProduct);
+                const product = {
+                    item_name: viewedProduct.item_name,
+                    item_id: viewedProduct.item_id,
+                    price: viewedProduct.price,
+                    currency: 'USD'
+                };
+                addItemToCart(product);
             });
         }
 
@@ -344,7 +342,7 @@
                 window.dataLayer.push({
                     'event': 'share',
                     'share_method': 'Link',
-                    'share_product': viewedProduct.item_name
+                    'share_product': viewedProduct.item_name // 'viewedProduct' is from <head>
                 });
                 alert('DataLayer Event: share');
             });
@@ -354,6 +352,7 @@
         const secondaryButtons = document.querySelectorAll('.secondaryAddToCartBtn');
         secondaryButtons.forEach(button => {
             button.addEventListener('click', function() {
+                // Read product data from the button's data attributes
                 const productData = {
                     item_name: button.getAttribute('data-name'),
                     item_id: button.getAttribute('data-id'),
@@ -365,7 +364,7 @@
         });
 
         // --- Run on page load ---
-        updateCartCount();
+        updateCartCount(); // This shows the correct cart count when the page loads
 
     </script>
 </body>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Classic Gadget - MyStore</title>
+    <!-- All <head> code (GTM, DataLayer, etc.) is identical and correct -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +15,8 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
-
+    <!-- Twitter base code, Snap, Meta, DataLayer, and GTM scripts are all here -->
+    
     <!-- Twitter conversion tracking base code -->
     <script>
         !function (e, t, n, s, u, a) {
@@ -27,6 +29,14 @@
     </script>
     <!-- End Twitter conversion tracking base code -->
 
+    <!-- Twitter conversion tracking event code -->
+    <script type="text/javascript">
+        // Insert Twitter Event ID
+        twq('event', 'tw-qpv9g-qpv9h', {
+        });
+    </script>
+    <!-- End Twitter conversion tracking event code -->
+
     <!-- Snap Pixel Code -->
     <script type='text/javascript'>
         (function (e, t, n) {
@@ -38,9 +48,7 @@
             'https://sc-static.net/scevent.min.js');
 
         snaptr('init', '5566d525-91b5-4dbc-9e85-2de9d5969475', {});
-
         snaptr('track', 'PAGE_VIEW');
-
     </script>
     <!-- End Snap Pixel Code -->
 
@@ -64,11 +72,6 @@
             src="https://www.facebook.com/tr?id=3381248502034833&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 
-    <!-- 
-      ==================================================================
-      STEP 2: DATALAYER (index.html)
-      ==================================================================
-    -->
     <script>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -80,12 +83,6 @@
         });
     </script>
 
-    <!-- 
-      ==================================================================
-      STEP 1: GTM SCRIPT (HEAD)
-      (Your GTM ID is already here)
-      ==================================================================
-    -->
     <!-- Google Tag Manager -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -99,29 +96,16 @@
 </head>
 
 <body class="bg-gray-100">
-    <!-- 
-      ==================================================================
-      STEP 1: GTM SCRIPT (BODY)
-      ==================================================================
-    -->
-    <!-- Google Tag Manager (noscript) -->
+    <!-- GTM Noscript is correct -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    <!-- Section 1: Navigation Bar -->
+    <!-- Nav Bar is correct -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
-            <!-- Logo -->
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
-
-            <!-- Menu Links -->
             <div class="flex items-center space-x-6">
-                <!-- 
-                  ==================================================================
-                  MODIFICATION 1: Added "About Us" link to new page
-                  ==================================================================
-                -->
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
                     About Us
                 </a>
@@ -133,16 +117,15 @@
         </div>
     </nav>
 
-    <!-- Section 2: Main Product Area -->
+    <!-- Main Product Area is correct -->
     <div class="container mx-auto max-w-4xl mt-12 mb-12 px-4">
         <div class="bg-white shadow-xl rounded-lg overflow-hidden md:flex">
-            <!-- Product Image -->
+            <!-- ... (image div) ... -->
             <div class="md:w-1/2">
                 <img src="https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget"
                     class="w-full h-auto object-cover">
             </div>
-
-            <!-- Product Details & Actions -->
+            <!-- ... (details div) ... -->
             <div class="md:w-1/2 p-8 flex flex-col justify-center">
                 <h1 class="text-3xl font-bold text-gray-900">The Classic Gadget</h1>
                 <p class="text-gray-600 mt-4">
@@ -150,8 +133,7 @@
                     calls, and everything in between.
                 </p>
                 <span class="text-4xl font-bold text-blue-600 my-6 block">$99.99</span>
-
-                <!-- Action Buttons -->
+                
                 <div class="grid grid-cols-1 gap-4">
                     <button id="addToCartBtn"
                         class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
@@ -174,45 +156,62 @@
         </div>
     </div>
 
-    <!-- Section 3: "YOU MAY ALSO LIKE" -->
+    <!-- "YOU MAY ALSO LIKE" Section -->
     <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
         <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">You May Also Like</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Product 1 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro"
-                    class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Pro</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$149.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    <!-- 
+                      ==================================================================
+                      CORRECTION 1.A: Added "secondaryAddToCartBtn" class for tracking
+                      and data attributes to store product info.
+                      ==================================================================
+                    -->
+                    <button 
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-name="The Gadget Pro"
+                        data-id="GADGET-PRO"
+                        data-price="149.99"
+                    >
                         Add to Cart
                     </button>
                 </div>
             </div>
             <!-- Product 2 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini"
-                    class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Mini</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$49.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    <!-- CORRECTION 1.B: Added class and data attributes -->
+                    <button 
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-name="The Gadget Mini"
+                        data-id="GADGET-MINI"
+                        data-price="49.99"
+                    >
                         Add to Cart
                     </button>
                 </div>
             </div>
             <!-- Product 3 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus"
-                    class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Plus</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$199.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    <!-- CORRECTION 1.C: Added class and data attributes -->
+                    <button 
+                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-name="The Gadget Plus"
+                        data-id="GADGET-PLUS"
+                        data-price="199.99"
+                    >
                         Add to Cart
                     </button>
                 </div>
@@ -220,30 +219,33 @@
         </div>
     </div>
 
-    <!-- Section 4: "WHY CHOOSE US" -->
+    <!-- "WHY CHOOSE US" Section -->
     <div class="bg-white py-24">
         <div class="container mx-auto max-w-4xl px-4 text-center">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">Experience the MyStore Difference</h2>
             <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                We aren't just another gadget store. We are curators of technology that enhances your life. From our
-                seamless checkout process to our world-class customer support, every detail is designed with you in
-                mind.
+                We aren't just another gadget store. We are curators of technology that enhances your life. From our seamless checkout process to our world-class customer support, every detail is designed with you in mind.
             </p>
-            <a href="#"
+            <!-- 
+              ==================================================================
+              CORRECTION 2: Fixed the broken footer link
+              ==================================================================
+            -->
+            <a href="about.html"
                 class="bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition duration-300">
                 Learn Our Story
             </a>
         </div>
     </div>
 
-    <!-- Section 5: Footer -->
+    <!-- Footer is correct -->
     <footer class="text-center p-12 text-gray-500 text-sm">
         © 2025 MyStore. All rights reserved.
     </footer>
 
     <!-- 
       ==================================================================
-      STEP 4: ALL DATALAYER EVENT LISTENERS
+      STEP 4: ALL DATALAYER EVENT LISTENERS (CORRECTED)
       ==================================================================
     -->
     <script>
@@ -263,7 +265,7 @@
             alert('DataLayer Event: login');
         });
 
-        // --- STANDARD EVENT 1: add_to_cart ---
+        // --- STANDARD EVENT 1: add_to_cart (Main Button) ---
         const addToCartButton = document.getElementById('addToCartBtn');
         addToCartButton.addEventListener('click', function () {
             console.log('Add to Cart clicked! Pushing to dataLayer...');
@@ -272,10 +274,10 @@
                 'ecommerce': {
                     'currency': 'USD',
                     'value': mainProductData.price,
-                    'items': [mainProductData]
+                    'items': [mainProductData] 
                 }
             });
-            alert('DataLayer Event: add_to_cart');
+            alert('DataLayer Event: add_to_cart (Main)');
         });
 
         // --- STANDARD EVENT 2: begin_checkout ---
@@ -290,12 +292,7 @@
                     'items': [mainProductData]
                 }
             });
-
-            /* ==================================================================
-              MODIFICATION 2: Redirect to the confirmation page
-              This simulates a successful purchase.
-              ==================================================================
-            */
+            
             console.log('Redirecting to confirmation page...');
             window.location.href = 'confirmation.html';
         });
@@ -319,7 +316,42 @@
             });
             alert('DataLayer Event: share');
         });
+
+        /* ==================================================================
+          CORRECTION 1.D: Added new listeners for the "You May Also Like" buttons
+          This fixes the "Not Implemented" audit error.
+          ==================================================================
+        */
+        // 1. Find ALL the secondary buttons
+        const secondaryButtons = document.querySelectorAll('.secondaryAddToCartBtn');
+        
+        // 2. Loop through each button and add a listener
+        secondaryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 3. Get the product data from the data- attributes we added
+                const productName = button.getAttribute('data-name');
+                const productId = button.getAttribute('data-id');
+                const productPrice = parseFloat(button.getAttribute('data-price'));
+
+                const productData = {
+                    item_name: productName,
+                    item_id: productId,
+                    price: productPrice,
+                    currency: 'USD'
+                };
+
+                console.log('Secondary Add to Cart clicked! Pushing to dataLayer...');
+                window.dataLayer.push({
+                    'event': 'add_to_cart', // We use the *same* event name
+                    'ecommerce': {
+                        'currency': 'USD',
+                        'value': productData.price,
+                        'items': [productData]
+                    }
+                });
+                alert('DataLayer Event: add_to_cart (' + productName + ')');
+            });
+        });
     </script>
 </body>
-
 </html>

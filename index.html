@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 
     <!-- Hard-coded pixels (as requested in original prompt) -->
     <!-- Twitter conversion tracking base code -->
@@ -94,6 +99,16 @@
         });
     </script>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CRSDPXRJH6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CRSDPXRJH6');
+    </script>
+
     <!-- GTM SCRIPT (HEAD) -->
     <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
@@ -121,7 +136,8 @@
                     About Us
                 </a>
                 <!-- Link to the new cart.html page -->
-                <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
+                <a href="cart.html"
+                    class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
                     Cart (<span id="cartCount">0</span>)
                 </a>
                 <button id="loginBtn"
@@ -140,7 +156,7 @@
                 <img src="https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget"
                     class="w-full h-auto object-cover">
             </div>
-            
+
             <!-- Product Details & Actions -->
             <div class="md:w-1/2 p-8 flex flex-col justify-center">
                 <h1 class="text-3xl font-bold text-gray-900">The Classic Gadget</h1>
@@ -149,7 +165,7 @@
                     calls, and everything in between.
                 </p>
                 <span class="text-4xl font-bold text-blue-600 my-6 block">$99.99</span>
-                
+
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-1 gap-4">
                     <button id="addToCartBtn"
@@ -176,11 +192,12 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Product 1 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro" class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro"
+                    class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Pro</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$149.99</p>
-                    <button 
+                    <button
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
                         data-name="The Gadget Pro" data-id="GADGET-PRO" data-price="149.99">
                         Add to Cart
@@ -189,11 +206,12 @@
             </div>
             <!-- Product 2 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini" class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini"
+                    class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Mini</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$49.99</p>
-                    <button 
+                    <button
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
                         data-name="The Gadget Mini" data-id="GADGET-MINI" data-price="49.99">
                         Add to Cart
@@ -202,11 +220,12 @@
             </div>
             <!-- Product 3 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus" class="w-full h-48 object-cover">
+                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus"
+                    class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Plus</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$199.99</p>
-                    <button 
+                    <button
                         class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
                         data-name="The Gadget Plus" data-id="GADGET-PLUS" data-price="199.99">
                         Add to Cart
@@ -247,7 +266,7 @@
          * CART HELPER FUNCTIONS (using localStorage)
          * =============================================
          */
-        
+
         // Function to get the cart from localStorage
         function getCart() {
             const cart = localStorage.getItem('myStoreCart');
@@ -273,13 +292,13 @@
         function addItemToCart(productData) {
             const cart = getCart();
             const existingItem = cart.find(item => item.item_id === productData.item_id);
-            
+
             if (existingItem) {
                 alert(productData.item_name + ' is already in your cart!');
             } else {
                 cart.push(productData);
                 saveCart(cart);
-                
+
                 // Push the event to the dataLayer
                 console.log('add_to_cart event pushed to dataLayer:', productData);
                 window.dataLayer.push({
@@ -351,7 +370,7 @@
         // --- Add to Cart (Secondary Buttons) ---
         const secondaryButtons = document.querySelectorAll('.secondaryAddToCartBtn');
         secondaryButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 // Read product data from the button's data attributes
                 const productData = {
                     item_name: button.getAttribute('data-name'),
@@ -368,4 +387,5 @@
 
     </script>
 </body>
+
 </html>

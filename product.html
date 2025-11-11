@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page - MyStore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+    
+    <script src="store.js"></script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        
+        // Get the product ID from the URL (e.g., product.html?id=GADGET-001)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id') || 'GADGET-001'; // Default
+        const productDetailData = productDB[productId] || productDB['GADGET-001'];
+
+        // Event 1: The PageView
+        window.dataLayer.push({
+            'event': 'page_view',
+            'page_type': 'Product Detail Page',
+            'product_id': productId
+        });
+
+        // Event 2: The STANDARD 'view_item' event (GA4 Standard)
+        window.dataLayer.push({
+            'event': 'view_item',
+            'ecommerce': {
+                'currency': 'USD',
+                'value': productDetailData.price,
+                'items': [productDetailData] // Send the full object
+            }
+        });
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CRSDPXRJH6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CRSDPXRJH6');
+    </script>
+
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https.www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TTMTP9T2');</script>
+    </head>
+
+<body class="bg-gray-100">
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript>
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
+            <div class="flex items-center space-x-6">
+                <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
+                    About Us
+                </a>
+                <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
+                    Cart (<span id="cartCount">0</span>)
+                </a>
+                <button id="loginBtn"
+                    class="bg-blue-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-4xl mt-12 mb-12 px-4">
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden md:flex">
+            <div class="md:w-1/2">
+                <img id="productImage" src="https://placehold.co/600x600/3B82F6/white?text=Loading..." alt="Product Image"
+                    class="w-full h-auto object-cover">
+            </div>
+            
+            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                <h1 id="productName" class="text-3xl font-bold text-gray-900">Loading...</h1>
+                <p class="text-gray-600 mt-2">Brand: <span id="productBrand">...</span> | Category: <span id="productCategory">...</span></p>
+                <p class="text-gray-600 mt-4">
+                    Experience the future of audio with this sleek, powerful, and easy-to-use gadget.
+                </p>
+                <span id="productPrice" class="text-4xl font-bold text-blue-600 my-6 block">$...</span>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <button id="addToCartBtn"
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
+                        Add to Cart
+                    </button>
+                    <button id="wishlistBtn"
+                        class="w-full bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-300 text-lg">
+                        ♡ Add to Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center p-12 text-gray-500 text-sm">
+        © 2025 MyStore. All rights reserved.
+    </footer>
+
+    <script src="store.js"></script>
+    <script>
+        // --- 1. Populate Page with Dynamic Data ---
+        // 'productDetailData' is from the <head> script
+        document.getElementById('productName').textContent = productDetailData.item_name;
+        document.getElementById('productBrand').textContent = productDetailData.item_brand;
+        document.getElementById('productCategory').textContent = productDetailData.item_category;
+        document.getElementById('productPrice').textContent = '$' + productDetailData.price;
+        // Simple image placeholder logic
+        if (productDetailData.item_id === 'GADGET-PRO') {
+            document.getElementById('productImage').src = 'https://placehold.co/600x600/93C5FD/white?text=Gadget+Pro';
+        } else if (productDetailData.item_id === 'GADGET-MINI') {
+            document.getElementById('productImage').src = 'https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini';
+        } else {
+             document.getElementById('productImage').src = 'https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget';
+        }
+
+
+        // --- 2. Add Event Listeners ---
+        
+        // --- CUSTOM EVENT: login ---
+        const loginButton = document.getElementById('loginBtn');
+        if (loginButton) {
+            loginButton.addEventListener('click', function () {
+                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+            });
+        }
+
+        // --- STANDARD EVENT: add_to_cart ---
+        const addToCartButton = document.getElementById('addToCartBtn');
+        if (addToCartButton) {
+            addToCartButton.addEventListener('click', function () {
+                // This function is in store.js
+                addItemToCart(productDetailData, 'product_detail_page', 'Product Detail Page', 0);
+            });
+        }
+        
+        // --- STANDARD EVENT: add_to_wishlist ---
+        const wishlistButton = document.getElementById('wishlistBtn');
+        if (wishlistButton) {
+            wishlistButton.addEventListener('click', function() {
+                console.log('Wishlist button clicked! Pushing add_to_wishlist...');
+                
+                // Fire the event with the rich item data
+                window.dataLayer.push({
+                    'event': 'add_to_wishlist',
+                    'ecommerce': {
+                        'currency': 'USD',
+                        'value': productDetailData.price,
+                        'items': [productDetailData]
+                    }
+                });
+            });
+        }
+        
+        // --- 3. Run on page load ---
+        updateCartCount(); // This function is in store.js
+    </script>
+</body>
+</html>

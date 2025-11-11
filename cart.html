@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
     
+    <script src="store.js"></script>
+
     <script>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -29,7 +31,7 @@
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    'https.www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TTMTP9T2');</script>
     </head>
 
@@ -93,15 +95,26 @@
                 checkoutButton.disabled = true;
                 checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
             } else {
-                cart.forEach(item => {
+                cart.forEach((item, index) => {
                     const itemHtml = `
                         <div class="flex justify-between items-center py-4">
-                            <span class="font-semibold text-gray-800">${item.item_name} (x${item.quantity})</span>
-                            <span class="font-semibold text-gray-800">$${(item.price * item.quantity).toFixed(2)}</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">${item.item_name} (x${item.quantity})</p>
+                                <p class="text-sm text-gray-500">${item.item_brand} / ${item.item_variant}</p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="font-semibold text-gray-800 mr-4">$${(item.price * item.quantity).toFixed(2)}</span>
+                                <button class="removeBtn text-red-500 hover:text-red-700 font-semibold" data-id="${item.item_id}">
+                                    Remove
+                                </button>
+                            </div>
                         </div>
                     `;
                     container.innerHTML += itemHtml;
                     cartTotal += item.price * item.quantity;
+                    
+                    // Add the 'index' for the dataLayer
+                    item.index = index;
                     cartItemsForDataLayer.push(item);
                 });
                 
@@ -120,9 +133,24 @@
                     }
                 });
             }
+
+            // --- Add listeners to the new "Remove" buttons ---
+            addRemoveListeners();
         }
 
-        // --- 2. Add Listener for Checkout Button (STANDARD EVENT: 'begin_checkout') ---
+        // --- 2. Add Listener for "Remove" (STANDARD EVENT: 'remove_from_cart') ---
+        function addRemoveListeners() {
+            const removeButtons = document.querySelectorAll('.removeBtn');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = button.getAttribute('data-id');
+                    removeItemFromCart(itemId); // This function is in store.js
+                    displayCart(); // Re-draw the cart
+                });
+            });
+        }
+
+        // --- 3. Add Listener for Checkout Button (STANDARD EVENT: 'begin_checkout') ---
         const checkoutButton = document.getElementById('checkoutBtn');
         checkoutButton.addEventListener('click', function() {
             console.log('Checkout button clicked! Firing begin_checkout event...');
@@ -136,24 +164,24 @@
                 'ecommerce': {
                     'currency': 'USD',
                     'value': cartTotal,
-                    'items': cart
+                    'items': cart,
+                    'coupon': 'TESTCOUPON' // Example of adding a coupon
                 }
             });
 
-            // Redirect to the final confirmation page
-            window.location.href = 'confirmation.html?source=checkout';
+            // Redirect to the *new* shipping page
+            window.location.href = 'checkout-shipping.html';
         });
 
-        // --- 3. Add Listener for Nav Bar Login Button ---
+        // --- 4. Add Listener for Nav Bar Login Button ---
         const loginButton = document.getElementById('loginBtn');
         if (loginButton) {
             loginButton.addEventListener('click', function () {
                 window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-                alert('DataLayer Event: login');
             });
         }
 
-        // --- 4. Run on page load ---
+        // --- 5. Run on page load ---
         updateCartCount(); // from store.js
         displayCart(); // Build the page and fire 'view_cart'
     </script>

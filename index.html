@@ -4,71 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyStore - Find Your Next Gadget</title>
-    <!-- 1. Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
+    
+    <script src="store.js"></script>
 
-    <!-- 
-      ==================================================================
-      NOTE: ALL HARD-CODED PIXELS (META, SNAP, TWITTER) HAVE BEEN REMOVED.
-      This solves the "fires 2 times" error. GTM will handle everything.
-      ==================================================================
-    -->
-
-    <!-- 
-      ==================================================================
-      DATALAYER (Homepage)
-      We fire 'view_item_list' (GA4 standard) for the product grid.
-      ==================================================================
-    -->
     <script>
         window.dataLayer = window.dataLayer || [];
         
-        // Define the products shown on this page
-        const homepageProducts = [
-            {
-                item_id: "GADGET-001",
-                item_name: "The Classic Gadget",
-                item_brand: "MyStore",
-                item_category: "Audio",
-                item_variant: "Black",
-                price: 99.99,
-                index: 0, // Position in the list
-                item_list_id: 'homepage_grid',
-                item_list_name: 'Homepage Product Grid',
-                affiliation: 'MyStore Online',
-                quantity: 1 // Default quantity for an add to cart
-            },
-            {
-                item_id: "GADGET-PRO",
-                item_name: "The Gadget Pro",
-                item_brand: "MyStore",
-                item_category: "Audio",
-                item_variant: "White",
-                price: 149.99,
-                index: 1,
-                item_list_id: 'homepage_grid',
-                item_list_name: 'Homepage Product Grid',
-                affiliation: 'MyStore Online',
-                quantity: 1
-            },
-            {
-                item_id: "GADGET-MINI",
-                item_name: "The Gadget Mini",
-                item_brand: "MyStore",
-                item_category: "Audio",
-                item_variant: "Blue",
-                price: 49.99,
-                index: 2,
-                item_list_id: 'homepage_grid',
-                item_list_name: 'Homepage Product Grid',
-                affiliation: 'MyStore Online',
-                quantity: 1
-            }
-        ];
+        // Get product/promo data from our "database" (store.js)
+        const products = [productDB["GADGET-001"], productDB["GADGET-PRO"], productDB["GADGET-MINI"]];
+        const promo = promotionsDB["PROMO-SUMMER"];
 
         // Event 1: The PageView
         window.dataLayer.push({
@@ -76,27 +25,42 @@
             'page_type': 'Homepage'
         });
 
-        // Event 2: The 'view_item_list' (GA4 Standard)
-        // We send just the item details, without affiliation/quantity
+        // Event 2: 'view_promotion' (GA4 Standard)
+        window.dataLayer.push({
+            'event': 'view_promotion',
+            'ecommerce': {
+                'creative_name': promo.creative_name,
+                'creative_slot': promo.creative_slot,
+                'promotion_id': promo.promotion_id,
+                'promotion_name': promo.promotion_name,
+                'items': [] // Can be left empty or filled with promoted items
+            }
+        });
+
+        // Event 3: 'view_item_list' (GA4 Standard)
+        // We must format the items as per Google's docs
+        const itemsForDataLayer = products.map((item, index) => ({
+            item_id: item.item_id,
+            item_name: item.item_name,
+            item_brand: item.item_brand,
+            item_category: item.item_category,
+            item_variant: item.item_variant,
+            price: item.price,
+            index: index,
+            item_list_id: 'homepage_grid',
+            item_list_name: 'Homepage Product Grid'
+        }));
+
         window.dataLayer.push({
             'event': 'view_item_list',
             'ecommerce': {
                 'item_list_id': 'homepage_grid',
                 'item_list_name': 'Homepage Product Grid',
-                'items': homepageProducts.map(p => ({
-                    item_id: p.item_id,
-                    item_name: p.item_name,
-                    item_brand: p.item_brand,
-                    item_category: p.item_category,
-                    item_variant: p.item_variant,
-                    price: p.price,
-                    index: p.index
-                }))
+                'items': itemsForDataLayer
             }
         });
     </script>
 
-    <!-- Google tag (gtag.js) - This is for GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -105,22 +69,16 @@
         gtag('config', 'G-CRSDPXRJH6');
     </script>
 
-    <!-- GTM SCRIPT (HEAD) - This is our main container -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    'https://www.googletagmanager.com/gtag/js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TTMTP9T2');</script>
-    <!-- End GTM Script -->
-</head>
+    </head>
 
 <body class="bg-gray-100">
-    <!-- GTM Noscript -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
-    <!-- Section 1: Navigation Bar -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
@@ -139,22 +97,19 @@
         </div>
     </nav>
 
-    <!-- Section 2: Hero Banner -->
     <div class="container mx-auto max-w-6xl mt-12 mb-12 px-4">
-        <div class="bg-blue-600 text-white p-16 rounded-lg shadow-xl text-center">
-            <h1 class="text-5xl font-bold">Welcome to MyStore</h1>
-            <p class="text-2xl mt-4">Discover the best gadgets, all in one place.</p>
-        </div>
+        <a href="#products" id="promoBanner" class="block bg-blue-600 text-white p-16 rounded-lg shadow-xl text-center hover:bg-blue-700 transition">
+            <h1 class="text-5xl font-bold">Summer Kick-off!</h1>
+            <p class="text-2xl mt-4">Get 5% off all audio gadgets. Click here to see products.</p>
+        </a>
     </div>
 
-    <!-- Section 3: Product Grid (Replaces old "You May Also Like") -->
-    <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
+    <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4" id="products">
         <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Products</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <!-- Product 1 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <a href="product.html">
+                <a href="product.html?id=GADGET-001" class="product-link" data-index="0">
                     <img src="https://placehold.co/600x400/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget" class="w-full h-48 object-cover">
                 </a>
                 <div class="p-6">
@@ -168,10 +123,8 @@
                 </div>
             </div>
             
-            <!-- Product 2 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <!-- We can make this one link to the product page too -->
-                <a href="product.html"> 
+                <a href="product.html?id=GADGET-PRO" class="product-link" data-index="1">
                     <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro" class="w-full h-48 object-cover">
                 </a>
                 <div class="p-6">
@@ -185,10 +138,8 @@
                 </div>
             </div>
             
-            <!-- Product 3 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <!-- We can make this one link to the product page too -->
-                <a href="product.html">
+                <a href="product.html?id=GADGET-MINI" class="product-link" data-index="2">
                     <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini" class="w-full h-48 object-cover">
                 </a>
                 <div class="p-6">
@@ -204,19 +155,10 @@
         </div>
     </div>
 
-    <!-- Section 4: Footer -->
     <footer class="text-center p-12 text-gray-500 text-sm">
         © 2025 MyStore. All rights reserved.
     </footer>
 
-    <!-- 
-      ==================================================================
-      JAVASCRIPT
-      This is the ONLY script block. It declares variables ONCE.
-      This fixes your "redeclare" error.
-      ==================================================================
-    -->
-    <script src="store.js"></script>
     <script>
         // --- CUSTOM EVENT: login ---
         // This is DECLARATION 1 (and the only one)
@@ -225,22 +167,57 @@
             loginButton.addEventListener('click', function () {
                 console.log('Login button was clicked! Pushing to dataLayer...');
                 window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-                alert('DataLayer Event: login');
             });
         }
 
+        // --- STANDARD EVENT: select_promotion ---
+        const promoBanner = document.getElementById('promoBanner');
+        if (promoBanner) {
+            promoBanner.addEventListener('click', function() {
+                const promo = promotionsDB["PROMO-SUMMER"]; // from store.js
+                console.log('Promotion clicked! Pushing select_promotion...');
+                window.dataLayer.push({
+                    'event': 'select_promotion',
+                    'ecommerce': {
+                        'creative_name': promo.creative_name,
+                        'creative_slot': promo.creative_slot,
+                        'promotion_id': promo.promotion_id,
+                        'promotion_name': promo.promotion_name,
+                        'items': []
+                    }
+                });
+            });
+        }
+        
+        // --- STANDARD EVENT: select_item ---
+        const productLinks = document.querySelectorAll('.product-link');
+        productLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const productIndex = parseInt(link.getAttribute('data-index'));
+                const product = products[productIndex]; // 'products' is from <head>
+                
+                console.log('Product link clicked! Pushing select_item...');
+                window.dataLayer.push({
+                    'event': 'select_item',
+                    'ecommerce': {
+                        'item_list_id': 'homepage_grid',
+                        'item_list_name': 'Homepage Product Grid',
+                        'items': [product] // Just the item that was clicked
+                    }
+                });
+            });
+        });
+
         // --- STANDARD EVENT: add_to_cart ---
-        // 'homepageProducts' is defined in the <head> script
         const allAddToCartButtons = document.querySelectorAll('.addToCartBtn');
         allAddToCartButtons.forEach(button => {
             button.addEventListener('click', function() {
-                // Get the product data from our array
                 const productIndex = parseInt(button.getAttribute('data-index'));
-                const productData = homepageProducts[productIndex];
+                const product = products[productIndex]; // 'products' is from <head>
                 
                 // This function is in store.js
                 // It handles adding to localStorage and pushing to dataLayer
-                addItemToCart(productData); 
+                addItemToCart(product, 'homepage_grid', 'Homepage Product Grid', productIndex); 
             });
         });
 

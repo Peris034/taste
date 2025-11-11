@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - MyStore</title>
+    <title>Refund Order - MyStore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'page_view',
-            'page_type': 'About Us'
+            'page_type': 'Refund Page'
         });
     </script>
 
@@ -56,15 +56,14 @@
         </div>
     </nav>
 
-    <div class="container mx-auto max-w-4xl mt-12 mb-24 px-4">
-        <div class="bg-white shadow-xl rounded-lg p-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-6">About MyStore</h1>
-            <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                Welcome to MyStore, where innovation meets simplicity. We believe that technology should be accessible, beautiful, and seamlessly integrated into your life.
-            </p>
-            <p class="text-lg text-gray-600 leading-relaxed">
-                Founded in 2025, our team is passionate about quality and customer service. We're not just selling products; we're building a community of tech enthusiasts who value design and performance.
-            </p>
+    <div class="container mx-auto max-w-2xl mt-12 mb-24 px-4">
+        <div class="bg-white shadow-xl rounded-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Refund Order</h1>
+            <p class="text-gray-600 mb-4">Click the button below to process a full refund for your last order.</p>
+            <p class="text-gray-800 font-semibold mb-6">Last Order ID: <span id="lastOrderId" class="font-mono">...</span></p>
+            <button id="refundBtn" class="w-full bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-300 text-lg">
+                Process Full Refund
+            </button>
         </div>
     </div>
 
@@ -74,7 +73,31 @@
 
     <script src="store.js"></script>
     <script>
-        // --- 1. Add Listener for Nav Bar Login Button ---
+        // --- 1. Get Last Transaction ID ---
+        const lastTransactionId = localStorage.getItem('lastTransactionId') || 'N/A';
+        document.getElementById('lastOrderId').textContent = lastTransactionId;
+        
+        // --- 2. Add Listener for "Refund" (STANDARD EVENT: 'refund') ---
+        const refundButton = document.getElementById('refundBtn');
+        refundButton.addEventListener('click', function() {
+            if (lastTransactionId === 'N/A') {
+                return;
+            }
+
+            console.log('Refund button clicked! Firing refund event...');
+            window.dataLayer.push({
+                'event': 'refund',
+                'ecommerce': {
+                    'transaction_id': lastTransactionId, // Required
+                    // In a real scenario, you'd pull the value/items from your server
+                    // For this demo, we'll just refund the transaction.
+                }
+            });
+            // In a real site, we'd clear the lastTransactionId here
+            // localStorage.removeItem('lastTransactionId');
+        });
+
+        // --- 3. Add Listener for Nav Bar Login Button ---
         const loginButton = document.getElementById('loginBtn');
         if (loginButton) {
             loginButton.addEventListener('click', function () {
@@ -82,7 +105,7 @@
             });
         }
 
-        // --- 2. Run on page load ---
+        // --- 4. Run on page load ---
         updateCartCount(); // from store.js
     </script>
 </body>

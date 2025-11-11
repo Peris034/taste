@@ -20,18 +20,10 @@
         });
     </script>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CRSDPXRJH6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CRSDPXRJH6');
-    </script>
-
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https.www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TTMTP9T2');</script>
     </head>
 
@@ -60,10 +52,14 @@
         <div class="bg-white shadow-xl rounded-lg p-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-8">Refund Order</h1>
             <p class="text-gray-600 mb-4">Click the button below to process a full refund for your last order.</p>
-            <p class="text-gray-800 font-semibold mb-6">Last Order ID: <span id="lastOrderId" class="font-mono">...</span></p>
+            <p class="text-gray-800 font-semibold mb-6">Last Order ID: <span id="lastOrderId" class="font-mono">...</span></T_ID...></p>
             <button id="refundBtn" class="w-full bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-300 text-lg">
                 Process Full Refund
             </button>
+
+            <p id="refundMessage" class="hidden mt-6 text-lg text-green-700 font-semibold text-center">
+                </p>
+
         </div>
     </div>
 
@@ -79,8 +75,16 @@
         
         // --- 2. Add Listener for "Refund" (STANDARD EVENT: 'refund') ---
         const refundButton = document.getElementById('refundBtn');
+        const messageElement = document.getElementById('refundMessage'); // Get the new message element
+
         refundButton.addEventListener('click', function() {
             if (lastTransactionId === 'N/A') {
+                // Check if a refund has already been processed
+                if (messageElement.textContent) {
+                    alert("This order has already been refunded.");
+                } else {
+                    alert("No previous transaction found to refund.");
+                }
                 return;
             }
 
@@ -93,8 +97,22 @@
                     // For this demo, we'll just refund the transaction.
                 }
             });
-            // In a real site, we'd clear the lastTransactionId here
-            // localStorage.removeItem('lastTransactionId');
+
+            // --- THIS IS THE NEW PART ---
+            // 1. Set the message text as requested
+            messageElement.textContent = "You will receive payment using your original payment method used in the next working 3-5 days.";
+            
+            // 2. Make the message visible
+            messageElement.classList.remove('hidden');
+            
+            // 3. Disable the button and change its text
+            refundButton.disabled = true;
+            refundButton.classList.add('opacity-50', 'cursor-not-allowed');
+            refundButton.textContent = 'Refund Processed';
+
+            // 4. (Good practice) Clear the lastTransactionId so they can't refund again
+            localStorage.removeItem('lastTransactionId');
+            document.getElementById('lastOrderId').textContent = 'N/A (Refunded)';
         });
 
         // --- 3. Add Listener for Nav Bar Login Button ---

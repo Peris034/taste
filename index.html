@@ -1,129 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Classic Gadget - MyStore</title>
-    <!-- All head scripts (Tailwind, Fonts) -->
+    <title>MyStore - Find Your Next Gadget</title>
+    <!-- 1. Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-
-    <!-- Hard-coded pixels (as requested in original prompt) -->
-    <!-- Twitter conversion tracking base code -->
-    <script>
-        !function (e, t, n, s, u, a) {
-            e.twq || (s = e.twq = function () {
-                s.exe ? s.exe.apply(s, arguments) : s.queue.push(arguments);
-            }, s.version = '1.1', s.queue = [], u = t.createElement(n), u.async = !0, u.src = 'https://static.ads-twitter.com/uwt.js',
-                a = t.getElementsByTagName(n)[0], a.parentNode.insertBefore(u, a))
-        }(window, document, 'script');
-        twq('config', 'tw-qpv9g-qpv9h');
-    </script>
-    <!-- End Twitter conversion tracking base code -->
-    <!-- Twitter conversion tracking event code -->
-    <!-- <script type="text/javascript">
-        twq('event', 'tw-qpv9g-qpv9h', {});
-    </script> -->
-    <!-- End Twitter conversion tracking event code -->
-    <!-- Snap Pixel Code -->
-    <script type='text/javascript'>
-        (function (e, t, n) {
-            if (e.snaptr) return; var a = e.snaptr = function () { a.handleRequest ? a.handleRequest.apply(a, arguments) : a.queue.push(arguments) };
-            a.queue = []; var s = 'script'; r = t.createElement(s); r.async = !0;
-            r.src = n; var u = t.getElementsByTagName(s)[0];
-            u.parentNode.insertBefore(r, u);
-        })(window, document,
-            'https://sc-static.net/scevent.min.js');
-        snaptr('init', '5566d525-91b5-4dbc-9e85-2de9d5969475', {});
-        // snaptr('track', 'PAGE_VIEW');
-    </script>
-    <!-- End Snap Pixel Code -->
-    <!-- Meta Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '3381248502034833');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=3381248502034833&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel Code -->
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 
     <!-- 
       ==================================================================
-      DATALAYER (index.html)
-      We now push 'view_item' which is the standard event for a product page.
+      NOTE: ALL HARD-CODED PIXELS (META, SNAP, TWITTER) HAVE BEEN REMOVED.
+      This solves the "fires 2 times" error. GTM will handle everything.
+      ==================================================================
+    -->
+
+    <!-- 
+      ==================================================================
+      DATALAYER (Homepage)
+      We fire 'view_item_list' (GA4 standard) for the product grid.
       ==================================================================
     -->
     <script>
         window.dataLayer = window.dataLayer || [];
-        // We capture the product details here for the "view_item" event
-        const viewedProduct = {
-            item_name: 'The Classic Gadget',
-            item_id: 'GADGET-001',
-            price: 99.99,
-            currency: 'USD'
-        };
+        
+        // Define the products shown on this page
+        const homepageProducts = [
+            {
+                item_id: "GADGET-001",
+                item_name: "The Classic Gadget",
+                item_brand: "MyStore",
+                item_category: "Audio",
+                item_variant: "Black",
+                price: 99.99,
+                index: 0, // Position in the list
+                item_list_id: 'homepage_grid',
+                item_list_name: 'Homepage Product Grid',
+                affiliation: 'MyStore Online',
+                quantity: 1 // Default quantity for an add to cart
+            },
+            {
+                item_id: "GADGET-PRO",
+                item_name: "The Gadget Pro",
+                item_brand: "MyStore",
+                item_category: "Audio",
+                item_variant: "White",
+                price: 149.99,
+                index: 1,
+                item_list_id: 'homepage_grid',
+                item_list_name: 'Homepage Product Grid',
+                affiliation: 'MyStore Online',
+                quantity: 1
+            },
+            {
+                item_id: "GADGET-MINI",
+                item_name: "The Gadget Mini",
+                item_brand: "MyStore",
+                item_category: "Audio",
+                item_variant: "Blue",
+                price: 49.99,
+                index: 2,
+                item_list_id: 'homepage_grid',
+                item_list_name: 'Homepage Product Grid',
+                affiliation: 'MyStore Online',
+                quantity: 1
+            }
+        ];
 
         // Event 1: The PageView
         window.dataLayer.push({
             'event': 'page_view',
-            'page_type': 'Product Detail Page',
+            'page_type': 'Homepage'
         });
 
-        // Event 2: The STANDARD 'view_item' event
+        // Event 2: The 'view_item_list' (GA4 Standard)
+        // We send just the item details, without affiliation/quantity
         window.dataLayer.push({
-            'event': 'view_item',
+            'event': 'view_item_list',
             'ecommerce': {
-                'currency': 'USD',
-                'value': viewedProduct.price,
-                'items': [viewedProduct]
+                'item_list_id': 'homepage_grid',
+                'item_list_name': 'Homepage Product Grid',
+                'items': homepageProducts.map(p => ({
+                    item_id: p.item_id,
+                    item_name: p.item_name,
+                    item_brand: p.item_brand,
+                    item_category: p.item_category,
+                    item_variant: p.item_variant,
+                    price: p.price,
+                    index: p.index
+                }))
             }
         });
     </script>
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) - This is for GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
+        function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-CRSDPXRJH6');
     </script>
 
-    <!-- GTM SCRIPT (HEAD) -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-TTMTP9T2');</script>
-    <!-- End Google Tag Manager -->
+    <!-- GTM SCRIPT (HEAD) - This is our main container -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https.www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TTMTP9T2');</script>
+    <!-- End GTM Script -->
 </head>
 
 <body class="bg-gray-100">
     <!-- GTM Noscript -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
+    <noscript><iframe src="https.www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
@@ -135,9 +128,7 @@
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
                     About Us
                 </a>
-                <!-- Link to the new cart.html page -->
-                <a href="cart.html"
-                    class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
+                <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
                     Cart (<span id="cartCount">0</span>)
                 </a>
                 <button id="loginBtn"
@@ -148,86 +139,64 @@
         </div>
     </nav>
 
-    <!-- Section 2: Main Product Area -->
-    <div class="container mx-auto max-w-4xl mt-12 mb-12 px-4">
-        <div class="bg-white shadow-xl rounded-lg overflow-hidden md:flex">
-            <!-- Product Image -->
-            <div class="md:w-1/2">
-                <img src="https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget"
-                    class="w-full h-auto object-cover">
-            </div>
-
-            <!-- Product Details & Actions -->
-            <div class="md:w-1/2 p-8 flex flex-col justify-center">
-                <h1 class="text-3xl font-bold text-gray-900">The Classic Gadget</h1>
-                <p class="text-gray-600 mt-4">
-                    Experience the future of audio with this sleek, powerful, and easy-to-use gadget. Perfect for music,
-                    calls, and everything in between.
-                </p>
-                <span class="text-4xl font-bold text-blue-600 my-6 block">$99.99</span>
-
-                <!-- Action Buttons -->
-                <div class="grid grid-cols-1 gap-4">
-                    <button id="addToCartBtn"
-                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 text-lg">
-                        Add to Cart
-                    </button>
-                    <!-- "Buy Now" button removed to force cart flow -->
-                </div>
-                <div class="mt-6 pt-6 border-t border-gray-200 flex space-x-4">
-                    <button id="demoBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
-                        Request Demo
-                    </button>
-                    <button id="shareBtn" class="text-sm text-gray-600 hover:text-blue-600 font-semibold">
-                        Share
-                    </button>
-                </div>
-            </div>
+    <!-- Section 2: Hero Banner -->
+    <div class="container mx-auto max-w-6xl mt-12 mb-12 px-4">
+        <div class="bg-blue-600 text-white p-16 rounded-lg shadow-xl text-center">
+            <h1 class="text-5xl font-bold">Welcome to MyStore</h1>
+            <p class="text-2xl mt-4">Discover the best gadgets, all in one place.</p>
         </div>
     </div>
 
-    <!-- Section 3: "YOU MAY ALSO LIKE" -->
+    <!-- Section 3: Product Grid (Replaces old "You May Also Like") -->
     <div class="container mx-auto max-w-6xl mt-16 mb-16 px-4">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">You May Also Like</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Products</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
             <!-- Product 1 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro"
-                    class="w-full h-48 object-cover">
+                <a href="product.html">
+                    <img src="https.placehold.co/600x400/3B82F6/white?text=The+Classic+Gadget" alt="The Classic Gadget" class="w-full h-48 object-cover">
+                </a>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800">The Classic Gadget</h3>
+                    <p class="text-2xl font-bold text-blue-600 mt-2">$99.99</p>
+                    <button 
+                        class="addToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-index="0">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Product 2 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <!-- We can make this one link to the product page too -->
+                <a href="product.html"> 
+                    <img src="https.placehold.co/600x400/93C5FD/white?text=Gadget+Pro" alt="Gadget Pro" class="w-full h-48 object-cover">
+                </a>
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Pro</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$149.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Pro" data-id="GADGET-PRO" data-price="149.99">
+                    <button 
+                        class="addToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-index="1">
                         Add to Cart
                     </button>
                 </div>
             </div>
-            <!-- Product 2 -->
+            
+            <!-- Product 3 -->
             <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini"
-                    class="w-full h-48 object-cover">
+                <!-- We can make this one link to the product page too -->
+                <a href="product.html">
+                    <img src="https.placehold.co/600x400/A5B4FC/white?text=Gadget+Mini" alt="Gadget Mini" class="w-full h-48 object-cover">
+                </a>
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">The Gadget Mini</h3>
                     <p class="text-2xl font-bold text-blue-600 mt-2">$49.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Mini" data-id="GADGET-MINI" data-price="49.99">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-            <!-- Product 3 -->
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <img src="https://placehold.co/600x400/C7D2FE/white?text=Gadget+Plus" alt="Gadget Plus"
-                    class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800">The Gadget Plus</h3>
-                    <p class="text-2xl font-bold text-blue-600 mt-2">$199.99</p>
-                    <button
-                        class="secondaryAddToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
-                        data-name="The Gadget Plus" data-id="GADGET-PLUS" data-price="199.99">
+                    <button 
+                        class="addToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
+                        data-index="2">
                         Add to Cart
                     </button>
                 </div>
@@ -235,90 +204,22 @@
         </div>
     </div>
 
-    <!-- Section 4: "WHY CHOOSE US" -->
-    <div class="bg-white py-24">
-        <div class="container mx-auto max-w-4xl px-4 text-center">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Experience the MyStore Difference</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                We aren't just another gadget store. We are curators of technology that enhances your life. From our
-                seamless checkout process to our world-class customer support, every detail is designed with you in
-                mind.
-            </p>
-            <a href="about.html"
-                class="bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition duration-300">
-                Learn Our Story
-            </a>
-        </div>
-    </div>
-
-    <!-- Section 5: Footer -->
+    <!-- Section 4: Footer -->
     <footer class="text-center p-12 text-gray-500 text-sm">
         © 2025 MyStore. All rights reserved.
     </footer>
 
     <!-- 
       ==================================================================
-      ALL JAVASCRIPT LISTENERS (HEAVILY MODIFIED for localStorage)
+      JAVASCRIPT
+      This is the ONLY script block. It declares variables ONCE.
+      This fixes your "redeclare" error.
       ==================================================================
     -->
+    <script src="store.js"></script>
     <script>
-        /* * =============================================
-         * CART HELPER FUNCTIONS (using localStorage)
-         * =============================================
-         */
-
-        // Function to get the cart from localStorage
-        function getCart() {
-            const cart = localStorage.getItem('myStoreCart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        // Function to save the cart to localStorage
-        function saveCart(cart) {
-            localStorage.setItem('myStoreCart', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        // Function to update the cart count in the nav bar
-        function updateCartCount() {
-            const cart = getCart();
-            const countElement = document.getElementById('cartCount');
-            if (countElement) {
-                countElement.textContent = cart.length;
-            }
-        }
-
-        // Function to add an item to the cart
-        function addItemToCart(productData) {
-            const cart = getCart();
-            const existingItem = cart.find(item => item.item_id === productData.item_id);
-
-            if (existingItem) {
-                alert(productData.item_name + ' is already in your cart!');
-            } else {
-                cart.push(productData);
-                saveCart(cart);
-
-                // Push the event to the dataLayer
-                console.log('add_to_cart event pushed to dataLayer:', productData);
-                window.dataLayer.push({
-                    'event': 'add_to_cart',
-                    'ecommerce': {
-                        'currency': 'USD',
-                        'value': productData.price,
-                        'items': [productData]
-                    }
-                });
-                alert(productData.item_name + ' added to cart!');
-            }
-        }
-
-        /* * =============================================
-         * EVENT LISTENERS
-         * =============================================
-         */
-
-        // --- CUSTOM EVENT 1: login ---
+        // --- CUSTOM EVENT: login ---
+        // This is DECLARATION 1 (and the only one)
         const loginButton = document.getElementById('loginBtn');
         if (loginButton) {
             loginButton.addEventListener('click', function () {
@@ -328,64 +229,23 @@
             });
         }
 
-        // --- STANDARD EVENT 1: add_to_cart (Main Button) ---
-        const addToCartButton = document.getElementById('addToCartBtn');
-        if (addToCartButton) {
-            addToCartButton.addEventListener('click', function () {
-                // 'viewedProduct' is defined in the <head> script
-                const product = {
-                    item_name: viewedProduct.item_name,
-                    item_id: viewedProduct.item_id,
-                    price: viewedProduct.price,
-                    currency: 'USD'
-                };
-                addItemToCart(product);
-            });
-        }
-
-        // --- STANDARD EVENT 3: generate_lead ---
-        const demoButton = document.getElementById('demoBtn');
-        if (demoButton) {
-            demoButton.addEventListener('click', function () {
-                console.log('Request Demo clicked! Pushing generate_lead to dataLayer...');
-                window.dataLayer.push({ 'event': 'generate_lead', 'lead_type': 'Product Demo' });
-                alert('DataLayer Event: generate_lead');
-            });
-        }
-
-        // --- CUSTOM EVENT 2: share ---
-        const shareButton = document.getElementById('shareBtn');
-        if (shareButton) {
-            shareButton.addEventListener('click', function () {
-                console.log('Share clicked! Pushing share to dataLayer...');
-                window.dataLayer.push({
-                    'event': 'share',
-                    'share_method': 'Link',
-                    'share_product': viewedProduct.item_name // 'viewedProduct' is from <head>
-                });
-                alert('DataLayer Event: share');
-            });
-        }
-
-        // --- Add to Cart (Secondary Buttons) ---
-        const secondaryButtons = document.querySelectorAll('.secondaryAddToCartBtn');
-        secondaryButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Read product data from the button's data attributes
-                const productData = {
-                    item_name: button.getAttribute('data-name'),
-                    item_id: button.getAttribute('data-id'),
-                    price: parseFloat(button.getAttribute('data-price')),
-                    currency: 'USD'
-                };
-                addItemToCart(productData);
+        // --- STANDARD EVENT: add_to_cart ---
+        // 'homepageProducts' is defined in the <head> script
+        const allAddToCartButtons = document.querySelectorAll('.addToCartBtn');
+        allAddToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the product data from our array
+                const productIndex = parseInt(button.getAttribute('data-index'));
+                const productData = homepageProducts[productIndex];
+                
+                // This function is in store.js
+                // It handles adding to localStorage and pushing to dataLayer
+                addItemToCart(productData); 
             });
         });
 
         // --- Run on page load ---
-        updateCartCount(); // This shows the correct cart count when the page loads
-
+        updateCartCount(); // This function is in store.js
     </script>
 </body>
-
 </html>

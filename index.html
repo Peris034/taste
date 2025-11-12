@@ -10,16 +10,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
     
+    <script>
+        // --- 1. (IMPROVED) Initialize dataLayer and add Page-Level data ---
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'page_type': 'Homepage'
+        });
+    </script>
+    
     <script src="store.js"></script>
 
     <script>
-        window.dataLayer = window.dataLayer || [];
-        
-        // --- 1. Get Product/Promo Data (Same as your original) ---
+        // --- 2. Get Product/Promo Data ---
         const products = [productDB["GADGET-001"], productDB["GADGET-PRO"], productDB["GADGET-MINI"]];
         const promo = promotionsDB["PROMO-SUMMER"];
         
-        // --- 2. (NEW!) MAP PRODUCTS FOR JSON-LD MICRODATA ---
+        // --- 3. MAP PRODUCTS FOR JSON-LD MICRODATA ---
         
         // Helper function to get image URL based on ID
         function getImageUrl(productId) {
@@ -42,16 +48,16 @@
                 "position": index + 1,
                 "item": {
                     "@type": "Product",
-                    "name": product.item_name, // Fixes 'title' warning
-                    "description": `Check out ${product.item_name} from MyStore.`, // Fixes 'description' warning
-                    "sku": product.item_id, // Fixes 'id' error
-                    "image": getImageUrl(product.item_id), // Fixes 'image_link' warning
-                    "url": `${baseUrl}/product.html?id=${product.item_id}`, // Fixes 'link' warning
+                    "name": product.item_name,
+                    "description": `Check out ${product.item_name} from MyStore.`,
+                    "sku": product.item_id,
+                    "image": getImageUrl(product.item_id),
+                    "url": `${baseUrl}/product.html?id=${product.item_id}`,
                     "offers": {
                         "@type": "Offer",
                         "priceCurrency": "USD",
-                        "price": product.price.toString(), // Fixes 'price' warning
-                        "availability": "https://schema.org/InStock" // Fixes 'availability' warning
+                        "price": product.price.toString(),
+                        "availability": "https://schema.org/InStock"
                     },
                     "brand": {
                          "@type": "Brand",
@@ -68,21 +74,16 @@
             "itemListElement": jsonLdItemList
         };
 
-        // --- 3. (NEW!) WRITE THE JSON-LD SCRIPT TO THE <head> ---
+        // --- 4. WRITE THE JSON-LD SCRIPT TO THE <head> ---
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.text = JSON.stringify(jsonLdScriptData);
         document.head.appendChild(script);
 
 
-        // --- 4. Your Existing GA4/GTM Pushes (Unchanged) ---
-        // Event 1: The PageView
-        // window.dataLayer.push({
-        //     'event': 'page_view',
-        //     'page_type': 'Homepage'
-        // });
-
-        // Event 2: 'view_promotion' (GA4 Standard)
+        // --- 5. GA4/GTM Event Pushes ---
+        
+        // Event 1: 'view_promotion' (GA4 Standard)
         window.dataLayer.push({
             'event': 'view_promotion',
             'ecommerce': {
@@ -90,12 +91,11 @@
                 'creative_slot': promo.creative_slot,
                 'promotion_id': promo.promotion_id,
                 'promotion_name': promo.promotion_name,
-                'items': [] // Can be left empty or filled with promoted items
+                'items': [] 
             }
         });
 
-        // Event 3: 'view_item_list' (GA4 Standard)
-        // We must format the items as per Google's docs
+        // Event 2: 'view_item_list' (GA4 Standard)
         const itemsForDataLayer = products.map((item, index) => ({
             item_id: item.item_id,
             item_name: item.item_name,
@@ -117,13 +117,6 @@
             }
         });
     </script>
-    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CRSDPXRJH6');
-    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -135,6 +128,7 @@
 <body class="bg-gray-100">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
+    
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
@@ -216,16 +210,6 @@
     </footer>
 
     <script>
-        // --- CUSTOM EVENT: login ---
-        // This is DECLARATION 1 (and the only one)
-        // const loginButton = document.getElementById('loginBtn');
-        // if (loginButton) {
-        //     loginButton.addEventListener('click', function () {
-        //         console.log('Login button was clicked! Pushing to dataLayer...');
-        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-        //     });
-        // }
-
         // --- STANDARD EVENT: select_promotion ---
         const promoBanner = document.getElementById('promoBanner');
         if (promoBanner) {

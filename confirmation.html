@@ -10,17 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
     
+    <script>
+        // --- 1. (IMPROVED) Initialize dataLayer ---
+        window.dataLayer = window.dataLayer || [];
+    </script>
+
     <script src="store.js"></script>
 
     <script>
-        window.dataLayer = window.dataLayer || [];
-        
-        // --- 1. Get Cart & Shipping Data ---
+        // --- 2. Get Cart & Shipping Data ---
         const cart = JSON.parse(localStorage.getItem('myStoreCart')) || [];
         const shippingInfo = JSON.parse(localStorage.getItem('myStoreShipping')) || { tier: 'Ground', price: 5.99 };
         
-        // --- 2. Generate the SINGLE Event ID for Deduplication ---
-        // This ID will be sent by GTM (browser) AND CAPI (server)
+        // --- 3. Generate the SINGLE Event ID for Deduplication ---
         const a_event_id = 'evt_' + new Date().getTime() + '.' + Math.floor(Math.random() * 100000);
         const a_transaction_id = 'T-' + new Date().getTime(); // A separate Order ID
 
@@ -32,18 +34,18 @@
             itemNamesForDisplay.push(item.item_name);
         });
 
-        // --- 3. Calculate Final Totals (as per Google's docs) ---
+        // --- 4. Calculate Final Totals ---
         const tax = cartSubtotal * 0.08; // 8% tax
         const shipping = shippingInfo.price;
         const totalValue = cartSubtotal + tax + shipping;
 
-        // --- 4. Fire Events (only if the cart wasn't empty) ---
+        // --- 5. (IMPROVED) Fire Events (only if the cart wasn't empty) ---
         if (cart.length > 0) {
-            // Event 1: The PageView
-            // window.dataLayer.push({
-            //     'event': 'page_view',
-            //     'page_type': 'Purchase Confirmation'
-            // });
+            
+            // Event 1: (IMPROVED) Push Page-Level data
+            window.dataLayer.push({
+                'page_type': 'Purchase Confirmation'
+            });
 
             // Event 2: The 'purchase' event (with rich data)
             console.log('Firing dynamic purchase event: ' + a_event_id);
@@ -62,33 +64,24 @@
                 'event_id': a_event_id // This is the DEDUPLICATION key
             });
 
-            // --- 5. CRITICAL: Clear the cart *after* tracking ---
+            // --- 6. CRITICAL: Clear the cart *after* tracking ---
             localStorage.removeItem('myStoreCart');
             localStorage.removeItem('myStoreShipping');
             console.log('Cart and shipping cleared from localStorage.');
 
         } else {
             console.log('Cart is empty, purchase event not fired.');
-            // We still fire a page_view for reloads
-            // window.dataLayer.push({
-            //     'event': 'page_view',
-            //     'page_type': 'Purchase Confirmation'
-            // });
+            // (IMPROVED) Still fire page_type for reloads
+            window.dataLayer.push({
+                'page_type': 'Purchase Confirmation'
+            });
         }
 
-        // --- 6. Pass data to the <body> script ---
+        // --- 7. Pass data to the <body> script ---
         window.transactionId = a_transaction_id;
         window.purchasedItems = itemNamesForDisplay;
 
     </script>
-
-    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CRSDPXRJH6');
-    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -100,6 +93,7 @@
 <body class="bg-gray-100">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
+    
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
@@ -142,13 +136,7 @@
 
     <script src="store.js"></script>
     <script>
-        // --- 1. Add Listener for Nav Bar Login Button ---
-        // const loginButton = document.getElementById('loginBtn');
-        // if (loginButton) {
-        //     loginButton.addEventListener('click', function () {
-        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-        //     });
-        // }
+        // --- 1. (CLEANED) Removed redundant login listener ---
 
         // --- 2. Display the Transaction ID and Item Names ---
         const orderIdElement = document.getElementById('orderId');

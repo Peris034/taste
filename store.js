@@ -8,7 +8,6 @@ functions for the shopping cart and dataLayer.
 
 /* * =============================================
  * OUR PRODUCT DATABASE
- * (Based on the rich GA4/Google documentation)
  * =============================================
  */
 const productDB = {
@@ -61,6 +60,28 @@ const promotionsDB = {
         promotion_name: "Summer Kick-off"
     }
 };
+
+/* * =============================================
+ * PUSH EXISTING USER DATA
+ * (This runs immediately on script load)
+ * =============================================
+ */
+function pushExistingUserData() {
+    const userId = localStorage.getItem('loggedInUserId');
+    const hashedEmail = localStorage.getItem('loggedInUserHashedEmail');
+
+    if (userId && hashedEmail) {
+        console.log('User is already logged in. Pushing user_id:', userId);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'user_id': userId,
+            'hashed_email': hashedEmail
+        });
+    }
+}
+// --- Run this immediately to make user_id available for the pageview ---
+pushExistingUserData();
+
 
 /* * =============================================
  * CART HELPER FUNCTIONS (using localStorage)
@@ -118,6 +139,8 @@ function addItemToCart(product, listId, listName, index) {
     if (existingItemIndex > -1) {
         // --- Item exists, update quantity ---
         cart[existingItemIndex].quantity += 1;
+        // Update the value for the dataLayer push
+        cartItem.quantity = cart[existingItemIndex].quantity; 
     } else {
         // --- Item is new, add it to cart ---
         cart.push(cartItem);
@@ -126,14 +149,13 @@ function addItemToCart(product, listId, listName, index) {
     saveCart(cart); // Save new cart and update count
 
     // --- Push the 'add_to_cart' event to the dataLayer ---
-    // We send *only* the item that was just added, not the whole cart
     console.log('add_to_cart event pushed to dataLayer:', cartItem);
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
         'event': 'add_to_cart',
         'ecommerce': {
             'currency': 'USD',
-            'value': cartItem.price * cartItem.quantity,
+            'value': cartItem.price, 
             'items': [cartItem] // Send just the one item in the GA4 format
         }
     });
@@ -152,11 +174,10 @@ function removeItemFromCart(itemId) {
     const itemIndex = cart.findIndex(item => item.item_id === itemId);
     
     if (itemIndex > -1) {
-        itemToRemove = cart[itemIndex]; // Get the item for the dataLayer
+        itemToRemove = { ...cart[itemIndex] }; // Clone the item for the dataLayer
         
-        // If quantity > 1, just decrease quantity. Otherwise, remove item.
-        if (itemToRemove.quantity > 1) {
-            cart[itemToRemove.quantity > 1 ? itemIndex : -1].quantity -= 1;
+        if (cart[itemIndex].quantity > 1) {
+            cart[itemIndex].quantity -= 1;
         } else {
             cart.splice(itemIndex, 1); // Remove the item from the array
         }
@@ -166,6 +187,8 @@ function removeItemFromCart(itemId) {
         saveCart(cart); // Save the updated cart
 
         // --- Push the 'remove_from_cart' event ---
+        itemToRemove.quantity = 1; 
+
         console.log('remove_from_cart event pushed:', itemToRemove);
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -173,15 +196,7 @@ function removeItemFromCart(itemId) {
             'ecommerce': {
                 'currency': 'USD',
                 'value': itemToRemove.price, // Value of the single item removed
-                'items': [{
-                    item_id: itemToRemove.item_id,
-                    item_name: itemToRemove.item_name,
-                    item_brand: itemToRemove.item_brand,
-                    item_category: itemToRemove.item_category,
-                    item_variant: itemToRemove.item_variant,
-                    price: itemToRemove.price,
-                    quantity: 1 // We're removing 1 at a time
-                }]
+                'items': [itemToRemove] // Send just the one item (with quantity 1)
             }
         });
     }
@@ -189,69 +204,94 @@ function removeItemFromCart(itemId) {
 
 
 /* * =============================================
- * (NEW) GLOBAL EVENT LISTENERS
- * (Run on every page that loads store.js)
+ * (IMPROVED) GLOBAL EVENT LISTENERS
  * =============================================
  */
 
-// We must wait for the DOM to be ready before adding listeners
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- (MODIFIED) 1. Mock User Database for Login Simulation ---
-    // This array holds the 5 random emails and their "processed" data
-    const mockUsers = [
-        { 
-            email: 'jane.doe@example.com', 
-            userId: 'cust_jd_1001', 
-            hashedEmail: '8b7f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d' // Mock SHA-256
-        },
-        { 
-            email: 'mark.smith@gmail.com', 
-            userId: 'cust_ms_1002', 
-            hashedEmail: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6' // Mock SHA-256
-        },
-        { 
-            email: 'tech_guru@yahoo.com', 
-            userId: 'cust_tg_1003', 
-            hashedEmail: 'f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5' // Mock SHA-256
-        },
-        { 
-            email: 'new_buyer_25@outlook.com', 
-            userId: 'cust_nb_1004', 
-            hashedEmail: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890' // Mock SHA-256
-        },
-        { 
-            email: 'commerce_fan@mystore.com', 
-            userId: 'cust_cf_1005', 
-            hashedEmail: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba098765' // Mock SHA-256
-        }
-    ];
-
-    // --- (MODIFIED) 2. Add Centralized Login Listener (with User-ID) ---
-    const loginButton = document.getElementById('loginBtn');
-    if (loginButton) {
-        loginButton.addEventListener('click', function () {
-            
-            // --- 1. Select a random user from the list ---
-            const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
-            
-            console.log(`Login button clicked! Simulating login for: ${randomUser.email}`);
-            
-            // --- 2. Save "processed" data to localStorage ---
-            // This simulates a real app, where you'd store this data
-            // to add to all subsequent page loads.
-            localStorage.setItem('loggedInUserId', randomUser.userId);
-            localStorage.setItem('loggedInUserHashedEmail', randomUser.hashedEmail);
-
-            // --- 3. Push "processed" data to the dataLayer ---
-            window.dataLayer.push({ 
-                'event': 'login', 
-                'login_method': 'Email',
-                'user_id': randomUser.userId, // This is the stable, non-PII User-ID
-                'hashed_email': randomUser.hashedEmail // This is the "processed" PII
-            });
-            
-        });
+// --- NEW: Mock User Database for Login Simulation ---
+// Moved outside the listener so it can be accessed by loginUser
+const mockUsers = [
+    { 
+        email: 'jane.doe@example.com', 
+        userId: 'cust_jd_1001', 
+        hashedEmail: '8b7f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d'
+    },
+    { 
+        email: 'mark.smith@gmail.com', 
+        userId: 'cust_ms_1002', 
+        hashedEmail: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6'
+    },
+    { 
+        email: 'tech_guru@yahoo.com', 
+        userId: 'cust_tg_1003', 
+        hashedEmail: 'f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5'
+    },
+    { 
+        email: 'new_buyer_25@outlook.com', 
+        userId: 'cust_nb_1004', 
+        hashedEmail: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+    },
+    { 
+        email: 'commerce_fan@mystore.com', 
+        userId: 'cust_cf_1005', 
+        hashedEmail: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba098765'
     }
+];
 
+// --- NEW: Login Function ---
+function loginUser() {
+    const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+    
+    console.log(`Login button clicked! Simulating login for: ${randomUser.email}`);
+    
+    localStorage.setItem('loggedInUserId', randomUser.userId);
+    localStorage.setItem('loggedInUserHashedEmail', randomUser.hashedEmail);
+
+    window.dataLayer.push({ 
+        'event': 'login', 
+        'login_method': 'Email',
+        'user_id': randomUser.userId,
+        'hashed_email': randomUser.hashedEmail
+    });
+    
+    // Reload the page to update the button text
+    window.location.reload();
+}
+
+// --- NEW: Logout Function ---
+function logoutUser() {
+    console.log('Logout button clicked! Clearing user data.');
+    
+    localStorage.removeItem('loggedInUserId');
+    localStorage.removeItem('loggedInUserHashedEmail');
+    
+    window.dataLayer.push({ 'event': 'logout' });
+    
+    // Reload the page to update the button text
+    window.location.reload();
+}
+
+// --- NEW: Check Login State Function ---
+function checkLoginState() {
+    const loginButton = document.getElementById('loginBtn');
+    if (!loginButton) return; // Do nothing if no login button on page
+
+    const userId = localStorage.getItem('loggedInUserId');
+    
+    if (userId) {
+        // --- User IS logged in ---
+        loginButton.textContent = 'Logout';
+        loginButton.addEventListener('click', logoutUser);
+    } else {
+        // --- User IS NOT logged in ---
+        loginButton.textContent = 'Login';
+        loginButton.addEventListener('click', loginUser);
+    }
+}
+
+
+// --- MODIFIED: Wait for DOM to be ready, then check state ---
+document.addEventListener('DOMContentLoaded', function() {
+    // This single function now handles all login/logout logic
+    checkLoginState();
 });

@@ -10,17 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style> body { font-family: 'Inter', sans-serif; } </style>
     
+    <script>
+        // --- 1. (IMPROVED) Initialize dataLayer ---
+        window.dataLayer = window.dataLayer || [];
+    </script>
+    
     <script src="store.js"></script>
 
     <script>
-        window.dataLayer = window.dataLayer || [];
-        
-        // --- 1. Get Product Data (Same as your original) ---
+        // --- 2. Get Product Data ---
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id') || 'GADGET-001'; // Default
         const productDetailData = productDB[productId] || productDB['GADGET-001'];
 
-        // --- 2. Determine Dynamic Image URL (Logic from your <body> script) ---
+        // --- 3. Determine Dynamic Image URL ---
         let imageUrl = 'https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget'; // Default
         if (productDetailData.item_id === 'GADGET-PRO') {
             imageUrl = 'https://placehold.co/600x600/93C5FD/white?text=Gadget+Pro';
@@ -28,20 +31,20 @@
             imageUrl = 'https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini';
         }
 
-        // --- 3. (NEW!) CREATE JSON-LD OBJECT FOR META ---
+        // --- 4. CREATE JSON-LD OBJECT FOR META ---
         const productJsonLd = {
           "@context": "https://schema.org",
           "@type": "Product",
-          "name": productDetailData.item_name, // Fixes 'title' warning
-          "description": "Experience the future of audio with this sleek, powerful, and easy-to-use gadget.", // Fixes 'description' warning
-          "sku": productDetailData.item_id, // This is the 'id' Meta's tool wants
-          "image": imageUrl, // Fixes 'image_link' warning
+          "name": productDetailData.item_name,
+          "description": "Experience the future of audio with this sleek, powerful, and easy-to-use gadget.",
+          "sku": productDetailData.item_id,
+          "image": imageUrl,
           "offers": {
             "@type": "Offer",
             "priceCurrency": "USD",
-            "price": productDetailData.price.toString(), // Fixes 'price' warning
-            "availability": "https://schema.org/InStock", // Fixes 'availability' warning
-            "url": window.location.href // Fixes 'link' warning
+            "price": productDetailData.price.toString(),
+            "availability": "https://schema.org/InStock",
+            "url": window.location.href
           },
           "brand": {
              "@type": "Brand",
@@ -49,22 +52,22 @@
           }
         };
         
-        // --- 4. (NEW!) WRITE THE JSON-LD SCRIPT TO THE <head> ---
+        // --- 5. WRITE THE JSON-LD SCRIPT TO THE <head> ---
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.text = JSON.stringify(productJsonLd);
         document.head.appendChild(script);
 
 
-        // --- 5. Your Existing GA4/GTM Pushes (Unchanged) ---
-        // Event 1: The PageView
-        // window.dataLayer.push({
-        //     'event': 'page_view',
-        //     'page_type': 'Product Detail Page',
-        //     'product_id': productId
-        // });
+        // --- 6. (IMPROVED) GA4/GTM Pushes ---
+        
+        // Event 1: (IMPROVED) Push Page-Level data for GTM's automatic pageview
+        window.dataLayer.push({
+            'page_type': 'Product Detail Page',
+            'product_id': productId
+        });
 
-        // Event 2: The STANDARD 'view_item' event (GA4 Standard)
+        // Event 2: The STANDARD 'view_item' event
         window.dataLayer.push({
             'event': 'view_item',
             'ecommerce': {
@@ -74,13 +77,6 @@
             }
         });
     </script>
-    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CRSDPXRJH6');
-    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -92,6 +88,7 @@
 <body class="bg-gray-100">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TTMTP9T2" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
+    
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-blue-600">MyStore</a>
@@ -144,14 +141,14 @@
     </footer>
 
     <script src="store.js"></script>
+    
     <script>
         // --- 1. Populate Page with Dynamic Data ---
-        // 'productDetailData' is from the <head> script
         document.getElementById('productName').textContent = productDetailData.item_name;
         document.getElementById('productBrand').textContent = productDetailData.item_brand;
         document.getElementById('productCategory').textContent = productDetailData.item_category;
         document.getElementById('productPrice').textContent = '$' + productDetailData.price;
-        // Simple image placeholder logic
+        
         if (productDetailData.item_id === 'GADGET-PRO') {
             document.getElementById('productImage').src = 'https://placehold.co/600x600/93C5FD/white?text=Gadget+Pro';
         } else if (productDetailData.item_id === 'GADGET-MINI') {
@@ -159,43 +156,44 @@
         } else {
              document.getElementById('productImage').src = 'https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget';
         }
-
-
+    </script>
+    
+    <script>
         // --- 2. Add Event Listeners ---
-        
-        // --- CUSTOM EVENT: login ---
-        // const loginButton = document.getElementById('loginBtn');
-        // if (loginButton) {
-        //     loginButton.addEventListener('click', function () {
-        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-        //     });
-        // }
 
         // --- STANDARD EVENT: add_to_cart ---
         const addToCartButton = document.getElementById('addToCartBtn');
         if (addToCartButton) {
             addToCartButton.addEventListener('click', function () {
-                // This function is in store.js
                 addItemToCart(productDetailData, 'product_detail_page', 'Product Detail Page', 0);
             });
         }
         
-        // --- STANDARD EVENT: add_to_wishlist ---
+        // --- (MODIFIED) STANDARD EVENT: add_to_wishlist ---
         const wishlistButton = document.getElementById('wishlistBtn');
         if (wishlistButton) {
-            wishlistButton.addEventListener('click', function() {
-                console.log('Wishlist button clicked! Pushing add_to_wishlist...');
-                
-                // Fire the event with the rich item data
-                window.dataLayer.push({
-                    'event': 'add_to_wishlist',
-                    'ecommerce': {
-                        'currency': 'USD',
-                        'value': productDetailData.price,
-                        'items': [productDetailData]
-                    }
+            
+            // --- NEW: Check if user is logged in ---
+            const userId = localStorage.getItem('loggedInUserId');
+            
+            if (userId) {
+                // --- User is Logged In: Add the listener ---
+                wishlistButton.addEventListener('click', function() {
+                    console.log('Wishlist button clicked! Pushing add_to_wishlist...');
+                    
+                    window.dataLayer.push({
+                        'event': 'add_to_wishlist',
+                        'ecommerce': {
+                            'currency': 'USD',
+                            'value': productDetailData.price,
+                            'items': [productDetailData]
+                        }
+                    });
                 });
-            });
+            } else {
+                // --- User is Logged Out: Hide the button ---
+                wishlistButton.style.display = 'none';
+            }
         }
         
         // --- 3. Run on page load ---

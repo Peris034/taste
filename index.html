@@ -15,15 +15,72 @@
     <script>
         window.dataLayer = window.dataLayer || [];
         
-        // Get product/promo data from our "database" (store.js)
+        // --- 1. Get Product/Promo Data (Same as your original) ---
         const products = [productDB["GADGET-001"], productDB["GADGET-PRO"], productDB["GADGET-MINI"]];
         const promo = promotionsDB["PROMO-SUMMER"];
+        
+        // --- 2. (NEW!) MAP PRODUCTS FOR JSON-LD MICRODATA ---
+        
+        // Helper function to get image URL based on ID
+        function getImageUrl(productId) {
+            if (productId === 'GADGET-PRO') {
+                return 'https://placehold.co/600x400/93C5FD/white?text=Gadget+Pro';
+            } else if (productId === 'GADGET-MINI') {
+                return 'https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini';
+            } else {
+                return 'https://placehold.co/600x400/3B82F6/white?text=The+Classic+Gadget';
+            }
+        }
+        
+        // Get the base URL (e.g., "https://www.mystore.com")
+        const baseUrl = window.location.origin;
 
-        // Event 1: The PageView
-        window.dataLayer.push({
-            'event': 'page_view',
-            'page_type': 'Homepage'
+        // Map products into Schema.org format
+        const jsonLdItemList = products.map((product, index) => {
+            return {
+                "@type": "ListItem",
+                "position": index + 1,
+                "item": {
+                    "@type": "Product",
+                    "name": product.item_name, // Fixes 'title' warning
+                    "description": `Check out ${product.item_name} from MyStore.`, // Fixes 'description' warning
+                    "sku": product.item_id, // Fixes 'id' error
+                    "image": getImageUrl(product.item_id), // Fixes 'image_link' warning
+                    "url": `${baseUrl}/product.html?id=${product.item_id}`, // Fixes 'link' warning
+                    "offers": {
+                        "@type": "Offer",
+                        "priceCurrency": "USD",
+                        "price": product.price.toString(), // Fixes 'price' warning
+                        "availability": "https://schema.org/InStock" // Fixes 'availability' warning
+                    },
+                    "brand": {
+                         "@type": "Brand",
+                         "name": product.item_brand
+                    }
+                }
+            };
         });
+
+        // Create the final JSON-LD script object
+        const jsonLdScriptData = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": jsonLdItemList
+        };
+
+        // --- 3. (NEW!) WRITE THE JSON-LD SCRIPT TO THE <head> ---
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(jsonLdScriptData);
+        document.head.appendChild(script);
+
+
+        // --- 4. Your Existing GA4/GTM Pushes (Unchanged) ---
+        // Event 1: The PageView
+        // window.dataLayer.push({
+        //     'event': 'page_view',
+        //     'page_type': 'Homepage'
+        // });
 
         // Event 2: 'view_promotion' (GA4 Standard)
         window.dataLayer.push({
@@ -60,14 +117,13 @@
             }
         });
     </script>
-
-    <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-CRSDPXRJH6');
-    </script>
+    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -149,7 +205,7 @@
                         class="addToCartBtn w-full mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 transition duration-300"
                         data-index="2">
                         Add to Cart
-                    </button>
+                    </Cta>
                 </div>
             </div>
         </div>
@@ -162,13 +218,13 @@
     <script>
         // --- CUSTOM EVENT: login ---
         // This is DECLARATION 1 (and the only one)
-        const loginButton = document.getElementById('loginBtn');
-        if (loginButton) {
-            loginButton.addEventListener('click', function () {
-                console.log('Login button was clicked! Pushing to dataLayer...');
-                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            });
-        }
+        // const loginButton = document.getElementById('loginBtn');
+        // if (loginButton) {
+        //     loginButton.addEventListener('click', function () {
+        //         console.log('Login button was clicked! Pushing to dataLayer...');
+        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+        //     });
+        // }
 
         // --- STANDARD EVENT: select_promotion ---
         const promoBanner = document.getElementById('promoBanner');

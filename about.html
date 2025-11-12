@@ -12,21 +12,21 @@
     
     <script src="store.js"></script>
 
-    <script>
+    <!-- <script>
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
             'event': 'page_view',
             'page_type': 'About Us'
         });
-    </script>
+    </script> -->
 
-    <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-CRSDPXRJH6');
-    </script>
+    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -75,12 +75,12 @@
     <script src="store.js"></script>
     <script>
         // --- 1. Add Listener for Nav Bar Login Button ---
-        const loginButton = document.getElementById('loginBtn');
-        if (loginButton) {
-            loginButton.addEventListener('click', function () {
-                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            });
-        }
+        // const loginButton = document.getElementById('loginBtn');
+        // if (loginButton) {
+        //     loginButton.addEventListener('click', function () {
+        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+        //     });
+        // }
 
         // --- 2. Run on page load ---
         updateCartCount(); // from store.js

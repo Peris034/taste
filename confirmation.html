@@ -40,10 +40,10 @@
         // --- 4. Fire Events (only if the cart wasn't empty) ---
         if (cart.length > 0) {
             // Event 1: The PageView
-            window.dataLayer.push({
-                'event': 'page_view',
-                'page_type': 'Purchase Confirmation'
-            });
+            // window.dataLayer.push({
+            //     'event': 'page_view',
+            //     'page_type': 'Purchase Confirmation'
+            // });
 
             // Event 2: The 'purchase' event (with rich data)
             console.log('Firing dynamic purchase event: ' + a_event_id);
@@ -70,10 +70,10 @@
         } else {
             console.log('Cart is empty, purchase event not fired.');
             // We still fire a page_view for reloads
-            window.dataLayer.push({
-                'event': 'page_view',
-                'page_type': 'Purchase Confirmation'
-            });
+            // window.dataLayer.push({
+            //     'event': 'page_view',
+            //     'page_type': 'Purchase Confirmation'
+            // });
         }
 
         // --- 6. Pass data to the <body> script ---
@@ -82,13 +82,13 @@
 
     </script>
 
-    <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-CRSDPXRJH6');
-    </script>
+    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -143,12 +143,12 @@
     <script src="store.js"></script>
     <script>
         // --- 1. Add Listener for Nav Bar Login Button ---
-        const loginButton = document.getElementById('loginBtn');
-        if (loginButton) {
-            loginButton.addEventListener('click', function () {
-                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            });
-        }
+        // const loginButton = document.getElementById('loginBtn');
+        // if (loginButton) {
+        //     loginButton.addEventListener('click', function () {
+        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+        //     });
+        // }
 
         // --- 2. Display the Transaction ID and Item Names ---
         const orderIdElement = document.getElementById('orderId');

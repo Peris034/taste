@@ -156,7 +156,7 @@ function removeItemFromCart(itemId) {
         
         // If quantity > 1, just decrease quantity. Otherwise, remove item.
         if (itemToRemove.quantity > 1) {
-            cart[itemIndex].quantity -= 1;
+            cart[itemToRemove.quantity > 1 ? itemIndex : -1].quantity -= 1;
         } else {
             cart.splice(itemIndex, 1); // Remove the item from the array
         }
@@ -186,3 +186,72 @@ function removeItemFromCart(itemId) {
         });
     }
 }
+
+
+/* * =============================================
+ * (NEW) GLOBAL EVENT LISTENERS
+ * (Run on every page that loads store.js)
+ * =============================================
+ */
+
+// We must wait for the DOM to be ready before adding listeners
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- (MODIFIED) 1. Mock User Database for Login Simulation ---
+    // This array holds the 5 random emails and their "processed" data
+    const mockUsers = [
+        { 
+            email: 'jane.doe@example.com', 
+            userId: 'cust_jd_1001', 
+            hashedEmail: '8b7f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d6b8f8d' // Mock SHA-256
+        },
+        { 
+            email: 'mark.smith@gmail.com', 
+            userId: 'cust_ms_1002', 
+            hashedEmail: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6' // Mock SHA-256
+        },
+        { 
+            email: 'tech_guru@yahoo.com', 
+            userId: 'cust_tg_1003', 
+            hashedEmail: 'f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5f0e1d2c3b4a5' // Mock SHA-256
+        },
+        { 
+            email: 'new_buyer_25@outlook.com', 
+            userId: 'cust_nb_1004', 
+            hashedEmail: '1234567890abcdef1234567890abcdef1234567890abcdef1234567890' // Mock SHA-256
+        },
+        { 
+            email: 'commerce_fan@mystore.com', 
+            userId: 'cust_cf_1005', 
+            hashedEmail: 'fedcba0987654321fedcba0987654321fedcba0987654321fedcba098765' // Mock SHA-256
+        }
+    ];
+
+    // --- (MODIFIED) 2. Add Centralized Login Listener (with User-ID) ---
+    const loginButton = document.getElementById('loginBtn');
+    if (loginButton) {
+        loginButton.addEventListener('click', function () {
+            
+            // --- 1. Select a random user from the list ---
+            const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+            
+            console.log(`Login button clicked! Simulating login for: ${randomUser.email}`);
+            
+            // --- 2. Save "processed" data to localStorage ---
+            // This simulates a real app, where you'd store this data
+            // to add to all subsequent page loads.
+            localStorage.setItem('loggedInUserId', randomUser.userId);
+            localStorage.setItem('loggedInUserHashedEmail', randomUser.hashedEmail);
+
+            // --- 3. Push "processed" data to the dataLayer ---
+            window.dataLayer.push({ 
+                'event': 'login', 
+                'login_method': 'Email',
+                'user_id': randomUser.userId, // This is the stable, non-PII User-ID
+                'hashed_email': randomUser.hashedEmail // This is the "processed" PII
+            });
+            
+        });
+    }
+
+});

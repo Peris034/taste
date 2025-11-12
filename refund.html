@@ -12,14 +12,6 @@
     
     <script src="store.js"></script>
 
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'page_view',
-            'page_type': 'Refund Page'
-        });
-    </script>
-
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -89,12 +81,19 @@
             }
 
             console.log('Refund button clicked! Firing refund event...');
+            
+            // --- THIS IS THE IMPROVED REFUND EVENT ---
+            // In a real app, you would pull the value/items from your server
+            // using the lastTransactionId. We'll hardcode an example value.
+            const exampleRefundValue = 155.98; // (e.g., 149.99 + 5.99 shipping)
+
             window.dataLayer.push({
                 'event': 'refund',
                 'ecommerce': {
                     'transaction_id': lastTransactionId, // Required
-                    // In a real scenario, you'd pull the value/items from your server
-                    // For this demo, we'll just refund the transaction.
+                    'value': exampleRefundValue, // <-- IMPROVEMENT
+                    'currency': 'USD' // <-- IMPROVEMENT
+                    // 'items': [ ... ] // <-- Optional: add items if known
                 }
             });
 
@@ -116,12 +115,7 @@
         });
 
         // --- 3. Add Listener for Nav Bar Login Button ---
-        const loginButton = document.getElementById('loginBtn');
-        if (loginButton) {
-            loginButton.addEventListener('click', function () {
-                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            });
-        }
+        // This has been REMOVED and moved to store.js
 
         // --- 4. Run on page load ---
         updateCartCount(); // from store.js

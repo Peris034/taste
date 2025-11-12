@@ -15,17 +15,54 @@
     <script>
         window.dataLayer = window.dataLayer || [];
         
-        // Get the product ID from the URL (e.g., product.html?id=GADGET-001)
+        // --- 1. Get Product Data (Same as your original) ---
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id') || 'GADGET-001'; // Default
         const productDetailData = productDB[productId] || productDB['GADGET-001'];
 
+        // --- 2. Determine Dynamic Image URL (Logic from your <body> script) ---
+        let imageUrl = 'https://placehold.co/600x600/3B82F6/white?text=The+Classic+Gadget'; // Default
+        if (productDetailData.item_id === 'GADGET-PRO') {
+            imageUrl = 'https://placehold.co/600x600/93C5FD/white?text=Gadget+Pro';
+        } else if (productDetailData.item_id === 'GADGET-MINI') {
+            imageUrl = 'https://placehold.co/600x400/A5B4FC/white?text=Gadget+Mini';
+        }
+
+        // --- 3. (NEW!) CREATE JSON-LD OBJECT FOR META ---
+        const productJsonLd = {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": productDetailData.item_name, // Fixes 'title' warning
+          "description": "Experience the future of audio with this sleek, powerful, and easy-to-use gadget.", // Fixes 'description' warning
+          "sku": productDetailData.item_id, // This is the 'id' Meta's tool wants
+          "image": imageUrl, // Fixes 'image_link' warning
+          "offers": {
+            "@type": "Offer",
+            "priceCurrency": "USD",
+            "price": productDetailData.price.toString(), // Fixes 'price' warning
+            "availability": "https://schema.org/InStock", // Fixes 'availability' warning
+            "url": window.location.href // Fixes 'link' warning
+          },
+          "brand": {
+             "@type": "Brand",
+             "name": productDetailData.item_brand
+          }
+        };
+        
+        // --- 4. (NEW!) WRITE THE JSON-LD SCRIPT TO THE <head> ---
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(productJsonLd);
+        document.head.appendChild(script);
+
+
+        // --- 5. Your Existing GA4/GTM Pushes (Unchanged) ---
         // Event 1: The PageView
-        window.dataLayer.push({
-            'event': 'page_view',
-            'page_type': 'Product Detail Page',
-            'product_id': productId
-        });
+        // window.dataLayer.push({
+        //     'event': 'page_view',
+        //     'page_type': 'Product Detail Page',
+        //     'product_id': productId
+        // });
 
         // Event 2: The STANDARD 'view_item' event (GA4 Standard)
         window.dataLayer.push({
@@ -37,14 +74,13 @@
             }
         });
     </script>
-
-    <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtm.js?id=G-CRSDPXRJH6"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-CRSDPXRJH6');
-    </script>
+    </script> -->
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -128,12 +164,12 @@
         // --- 2. Add Event Listeners ---
         
         // --- CUSTOM EVENT: login ---
-        const loginButton = document.getElementById('loginBtn');
-        if (loginButton) {
-            loginButton.addEventListener('click', function () {
-                window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
-            });
-        }
+        // const loginButton = document.getElementById('loginBtn');
+        // if (loginButton) {
+        //     loginButton.addEventListener('click', function () {
+        //         window.dataLayer.push({ 'event': 'login', 'login_method': 'Email' });
+        //     });
+        // }
 
         // --- STANDARD EVENT: add_to_cart ---
         const addToCartButton = document.getElementById('addToCartBtn');

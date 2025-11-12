@@ -96,6 +96,9 @@
                 <a href="about.html" class="text-gray-600 hover:text-blue-600 font-semibold">
                     About Us
                 </a>
+                <a href="wishlist.html" id="wishlistLink" class="text-gray-600 hover:text-blue-600 font-semibold" style="display: none;">
+                    Wishlist
+                </a>
                 <a href="cart.html" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold hover:bg-blue-200 transition duration-300">
                     Cart (<span id="cartCount">0</span>)
                 </a>
@@ -173,25 +176,16 @@
         const wishlistButton = document.getElementById('wishlistBtn');
         if (wishlistButton) {
             
-            // --- NEW: Check if user is logged in ---
+            // --- Check if user is logged in (unchanged) ---
             const userId = localStorage.getItem('loggedInUserId');
             
             if (userId) {
-                // --- User is Logged In: Add the listener ---
+                // --- (CHANGED) User is Logged In: Call the new store.js function ---
                 wishlistButton.addEventListener('click', function() {
-                    console.log('Wishlist button clicked! Pushing add_to_wishlist...');
-                    
-                    window.dataLayer.push({
-                        'event': 'add_to_wishlist',
-                        'ecommerce': {
-                            'currency': 'USD',
-                            'value': productDetailData.price,
-                            'items': [productDetailData]
-                        }
-                    });
+                    addItemToWishlist(productDetailData); // This function is now in store.js
                 });
             } else {
-                // --- User is Logged Out: Hide the button ---
+                // --- User is Logged Out: Hide the button (unchanged) ---
                 wishlistButton.style.display = 'none';
             }
         }

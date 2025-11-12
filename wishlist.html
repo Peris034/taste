@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Payment - MyStore</title>
+    <title>Your Wishlist - MyStore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,13 +11,12 @@
     <style> body { font-family: 'Inter', sans-serif; } </style>
     
     <script>
-        // --- 1. (IMPROVED) Initialize dataLayer and add Page-Level data ---
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
-            'page_type': 'Checkout-Payment'
+            'page_type': 'Wishlist'
         });
     </script>
-
+    
     <script src="store.js"></script>
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -52,25 +51,12 @@
         </div>
     </nav>
 
-    <div class="container mx-auto max-w-2xl mt-12 mb-24 px-4">
+    <div class="container mx-auto max-w-4xl mt-12 mb-24 px-4">
         <div class="bg-white shadow-xl rounded-lg p-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-8">Payment Information</h1>
-            <div class="space-y-4">
-                <div>
-                    <label for="payment" class="block text-sm font-medium text-gray-700">Payment Type</label>
-                    <select id="payment" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="PayPal">PayPal</option>
-                    </select>
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Your Wishlist</h1>
+            
+            <div id="wishlistItemsContainer" class="divide-y divide-gray-200">
                 </div>
-                <div>
-                    <label for="card" class="block text-sm font-medium text-gray-700">Card Number</label>
-                    <input type="text" id="card" placeholder="**** **** **** 1234" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2">
-                </div>
-                <button id="placeOrderBtn" class="w-full bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition duration-300 text-lg">
-                    Place Order
-                </button>
-            </div>
         </div>
     </div>
 
@@ -80,35 +66,52 @@
 
     <script src="store.js"></script>
     <script>
-        // --- 1. Add Listener for "Place Order" (STANDARD EVENT: 'add_payment_info') ---
-        const placeOrderButton = document.getElementById('placeOrderBtn');
-        placeOrderButton.addEventListener('click', function() {
-            const cart = getCart();
-            let cartTotal = 0;
-            cart.forEach(item => cartTotal += item.price * item.quantity);
+        // --- 1. Function to Display Wishlist Items ---
+        function displayWishlist() {
+            const wishlist = getWishlist(); // from store.js
+            const container = document.getElementById('wishlistItemsContainer');
+            container.innerHTML = ''; // Clear old content
 
-            // Get the selected payment type
-            const paymentType = document.getElementById('payment').value; // e.g., "Credit Card"
+            if (wishlist.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Your wishlist is empty.</p>';
+            } else {
+                wishlist.forEach((item, index) => {
+                    const itemHtml = `
+                        <div class="flex justify-between items-center py-4">
+                            <div>
+                                <a href="product.html?id=${item.item_id}" class="font-semibold text-gray-800 hover:text-blue-600">${item.item_name}</a>
+                                <p class="text-sm text-gray-500">${item.item_brand} / ${item.item_variant}</p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="font-semibold text-gray-800 mr-4">$${item.price.toFixed(2)}</span>
+                                <button class="removeBtn text-red-500 hover:text-red-700 font-semibold" data-id="${item.item_id}">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += itemHtml;
+                });
+            }
+            // --- Add listeners to the new "Remove" buttons ---
+            addRemoveListeners();
+        }
 
-            console.log('Place Order clicked! Firing add_payment_info...');
-            window.dataLayer.push({
-                'event': 'add_payment_info',
-                'ecommerce': {
-                    'currency': 'USD',
-                    'value': cartTotal,
-                    'items': cart,
-                    'payment_type': paymentType // As per Google's docs
-                }
+        // --- 2. Add Listener for "Remove" ---
+        function addRemoveListeners() {
+            const removeButtons = document.querySelectorAll('.removeBtn');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = button.getAttribute('data-id');
+                    removeItemFromWishlist(itemId); // This function is in store.js
+                    displayWishlist(); // Re-draw the wishlist
+                });
             });
-
-            // Redirect to the final confirmation page
-            window.location.href = 'confirmation.html';
-        });
-
-        // --- 2. (CLEANED) Removed redundant login listener ---
+        }
 
         // --- 3. Run on page load ---
         updateCartCount(); // from store.js
+        displayWishlist(); // Build the page
     </script>
 </body>
 </html>

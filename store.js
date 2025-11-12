@@ -202,6 +202,81 @@ function removeItemFromCart(itemId) {
     }
 }
 
+/* * =============================================
+ * (NEW) WISHLIST HELPER FUNCTIONS
+ * =============================================
+ */
+
+// Function to get the wishlist from localStorage
+function getWishlist() {
+    const wishlist = localStorage.getItem('myStoreWishlist');
+    return wishlist ? JSON.parse(wishlist) : [];
+}
+
+// Function to save the wishlist to localStorage
+function saveWishlist(wishlist) {
+    localStorage.setItem('myStoreWishlist', JSON.stringify(wishlist));
+}
+
+/**
+ * Adds a full product object to the wishlist and dataLayer
+ * @param {object} product - The full, rich product object from productDB
+ */
+function addItemToWishlist(product) {
+    const wishlist = getWishlist();
+    
+    // Check if item is already in wishlist
+    const existingItemIndex = wishlist.findIndex(item => item.item_id === product.item_id);
+
+    if (existingItemIndex > -1) {
+        // --- Item already exists ---
+        alert('This item is already in your wishlist.');
+    } else {
+        // --- Item is new, add it to wishlist ---
+        wishlist.push(product);
+        saveWishlist(wishlist);
+        alert('Item added to your wishlist!');
+
+        // --- Push the 'add_to_wishlist' event to the dataLayer ---
+        console.log('add_to_wishlist event pushed to dataLayer:', product);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'add_to_wishlist',
+            'ecommerce': {
+                'currency': 'USD',
+                'value': product.price,
+                'items': [product] 
+            }
+        });
+    }
+}
+
+/**
+ * Removes an item from the wishlist by its ID
+ * @param {string} itemId - The 'item_id' (e.g., 'GADGET-001')
+ */
+function removeItemFromWishlist(itemId) {
+    let wishlist = getWishlist();
+    const itemIndex = wishlist.findIndex(item => item.item_id === itemId);
+    
+    if (itemIndex > -1) {
+        const itemToRemove = wishlist[itemIndex];
+        wishlist.splice(itemIndex, 1); // Remove the item
+        saveWishlist(wishlist); // Save the updated wishlist
+
+        // (Optional but good practice) Push a 'remove_from_wishlist' event
+        console.log('remove_from_wishlist event pushed:', itemToRemove);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'remove_from_wishlist',
+            'ecommerce': {
+                'currency': 'USD',
+                'value': itemToRemove.price,
+                'items': [itemToRemove]
+            }
+        });
+    }
+}
 
 /* * =============================================
  * (IMPROVED) GLOBAL EVENT LISTENERS
@@ -274,6 +349,8 @@ function logoutUser() {
 // --- NEW: Check Login State Function ---
 function checkLoginState() {
     const loginButton = document.getElementById('loginBtn');
+    const wishlistLink = document.getElementById('wishlistLink'); // Get the new link
+    
     if (!loginButton) return; // Do nothing if no login button on page
 
     const userId = localStorage.getItem('loggedInUserId');
@@ -282,10 +359,21 @@ function checkLoginState() {
         // --- User IS logged in ---
         loginButton.textContent = 'Logout';
         loginButton.addEventListener('click', logoutUser);
+        
+        // --- (NEW) Show wishlist link ---
+        if (wishlistLink) {
+            wishlistLink.style.display = 'inline-block';
+        }
+
     } else {
         // --- User IS NOT logged in ---
         loginButton.textContent = 'Login';
         loginButton.addEventListener('click', loginUser);
+        
+        // --- (NEW) Hide wishlist link ---
+        if (wishlistLink) {
+            wishlistLink.style.display = 'none';
+        }
     }
 }
 
